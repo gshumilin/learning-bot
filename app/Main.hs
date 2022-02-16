@@ -1,6 +1,13 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module Main where
 
-import Lib
+import           Lib
+import           BotConfig
+
 
 main :: IO ()
-main = someFunc
+main = do 
+    addLog      "______________Telegram bot started______________\n"
+    let startOffset = exampleOffset
+    botRun startOffset

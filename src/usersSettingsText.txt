@@ -1,0 +1,3 @@
+Settings {settingsChat = Chat {chatID = 477872581, chatUserName = "gshumilin"}, repeatValue = 1}
+Settings {settingsChat = Chat {chatID = 477872581, chatUserName = "gshumilin"}, repeatValue = 3}
+Settings {settingsChat = Chat {chatID = 477872581, chatUserName = "gshumilin"}, repeatValue = 1}

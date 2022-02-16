@@ -1,0 +1,54 @@
+______________Telegram bot started______________
+
+STATUS : Sended request for updates to Telegram
+Got updates: 
+"{\"ok\":true,\"result\":[{\"update_id\":807401007,\n\"message\":{\"message_id\":886,\"from\":{\"id\":477872581,\"is_bot\":false,\"first_name\":\"\\u0413\\u0435\\u043d\\u0430\",\"last_name\":\"\\u0428\\u0443\\u043c\\u0438\\u043b\\u0438\\u043d\",\"username\":\"gshumilin\",\"language_code\":\"ru\"},\"chat\":{\"id\":477872581,\"first_name\":\"\\u0413\\u0435\\u043d\\u0430\",\"last_name\":\"\\u0428\\u0443\\u043c\\u0438\\u043b\\u0438\\u043d\",\"username\":\"gshumilin\",\"type\":\"private\"},\"date\":1645006395,\"text\":\"1\"}}]}"
+STATUS : start update processing
+STATUS : getUserSettings in echoMesseging returns Nothing
+sendMessage to "gshumilin", chat_ID: 477872581
+End of multiple sending
+STATUS : Sended request for updates to Telegram
+Got updates: 
+"{\"ok\":true,\"result\":[{\"update_id\":807401008,\n\"message\":{\"message_id\":888,\"from\":{\"id\":477872581,\"is_bot\":false,\"first_name\":\"\\u0413\\u0435\\u043d\\u0430\",\"last_name\":\"\\u0428\\u0443\\u043c\\u0438\\u043b\\u0438\\u043d\",\"username\":\"gshumilin\",\"language_code\":\"ru\"},\"chat\":{\"id\":477872581,\"first_name\":\"\\u0413\\u0435\\u043d\\u0430\",\"last_name\":\"\\u0428\\u0443\\u043c\\u0438\\u043b\\u0438\\u043d\",\"username\":\"gshumilin\",\"type\":\"private\"},\"date\":1645006399,\"text\":\"/help\",\"entities\":[{\"offset\":0,\"length\":5,\"type\":\"bot_command\"}]}}]}"
+STATUS : start update processing
+sendMessage to "gshumilin", chat_ID: 477872581
+Help command was done
+STATUS : Sended request for updates to Telegram
+Got updates: 
+"{\"ok\":true,\"result\":[{\"update_id\":807401009,\n\"message\":{\"message_id\":890,\"from\":{\"id\":477872581,\"is_bot\":false,\"first_name\":\"\\u0413\\u0435\\u043d\\u0430\",\"last_name\":\"\\u0428\\u0443\\u043c\\u0438\\u043b\\u0438\\u043d\",\"username\":\"gshumilin\",\"language_code\":\"ru\"},\"chat\":{\"id\":477872581,\"first_name\":\"\\u0413\\u0435\\u043d\\u0430\",\"last_name\":\"\\u0428\\u0443\\u043c\\u0438\\u043b\\u0438\\u043d\",\"username\":\"gshumilin\",\"type\":\"private\"},\"date\":1645006403,\"text\":\"/repeat\",\"entities\":[{\"offset\":0,\"length\":7,\"type\":\"bot_command\"}]}}]}"
+STATUS : start update processing
+sendMessage to "gshumilin", chat_ID: 477872581
+Repeat command was done
+STATUS : Sended request for updates to Telegram
+Got updates: 
+"{\"ok\":true,\"result\":[{\"update_id\":807401010,\n\"callback_query\":{\"id\":\"2052447107262240646\",\"from\":{\"id\":477872581,\"is_bot\":false,\"first_name\":\"\\u0413\\u0435\\u043d\\u0430\",\"last_name\":\"\\u0428\\u0443\\u043c\\u0438\\u043b\\u0438\\u043d\",\"username\":\"gshumilin\",\"language_code\":\"ru\"},\"message\":{\"message_id\":891,\"from\":{\"id\":2141433601,\"is_bot\":true,\"first_name\":\"shumilin-test-bot\",\"username\":\"shumilin_test_bot\"},\"chat\":{\"id\":477872581,\"first_name\":\"\\u0413\\u0435\\u043d\\u0430\",\"last_name\":\"\\u0428\\u0443\\u043c\\u0438\\u043b\\u0438\\u043d\",\"username\":\"gshumilin\",\"type\":\"private\"},\"date\":1645006403,\"text\":\"Choose your destiny\",\"reply_markup\":{\"inline_keyboard\":[[{\"text\":\"1\",\"callback_data\":\"1\"}],[{\"text\":\"2\",\"callback_data\":\"2\"}],[{\"text\":\"3\",\"callback_data\":\"3\"}]]}},\"chat_instance\":\"3398924605723976319\",\"data\":\"3\"}}]}"
+STATUS : start update processing
+STATUS : Got callback from "gshumilin", chat_ID: 477872581
+sendMessage to "gshumilin", chat_ID: 477872581
+STATUS : Sended request for updates to Telegram
+Got updates: 
+"{\"ok\":true,\"result\":[{\"update_id\":807401011,\n\"message\":{\"message_id\":893,\"from\":{\"id\":477872581,\"is_bot\":false,\"first_name\":\"\\u0413\\u0435\\u043d\\u0430\",\"last_name\":\"\\u0428\\u0443\\u043c\\u0438\\u043b\\u0438\\u043d\",\"username\":\"gshumilin\",\"language_code\":\"ru\"},\"chat\":{\"id\":477872581,\"first_name\":\"\\u0413\\u0435\\u043d\\u0430\",\"last_name\":\"\\u0428\\u0443\\u043c\\u0438\\u043b\\u0438\\u043d\",\"username\":\"gshumilin\",\"type\":\"private\"},\"date\":1645006408,\"text\":\"1\"}}]}"
+STATUS : start update processing
+sendMessage to "gshumilin", chat_ID: 477872581
+sendMessage to "gshumilin", chat_ID: 477872581
+sendMessage to "gshumilin", chat_ID: 477872581
+End of multiple sending
+STATUS : Sended request for updates to Telegram
+Got updates: 
+"{\"ok\":true,\"result\":[{\"update_id\":807401012,\n\"message\":{\"message_id\":897,\"from\":{\"id\":477872581,\"is_bot\":false,\"first_name\":\"\\u0413\\u0435\\u043d\\u0430\",\"last_name\":\"\\u0428\\u0443\\u043c\\u0438\\u043b\\u0438\\u043d\",\"username\":\"gshumilin\",\"language_code\":\"ru\"},\"chat\":{\"id\":477872581,\"first_name\":\"\\u0413\\u0435\\u043d\\u0430\",\"last_name\":\"\\u0428\\u0443\\u043c\\u0438\\u043b\\u0438\\u043d\",\"username\":\"gshumilin\",\"type\":\"private\"},\"date\":1645006411,\"text\":\"/repeat\",\"entities\":[{\"offset\":0,\"length\":7,\"type\":\"bot_command\"}]}}]}"
+STATUS : start update processing
+sendMessage to "gshumilin", chat_ID: 477872581
+Repeat command was done
+STATUS : Sended request for updates to Telegram
+Got updates: 
+"{\"ok\":true,\"result\":[{\"update_id\":807401013,\n\"callback_query\":{\"id\":\"2052447108401739843\",\"from\":{\"id\":477872581,\"is_bot\":false,\"first_name\":\"\\u0413\\u0435\\u043d\\u0430\",\"last_name\":\"\\u0428\\u0443\\u043c\\u0438\\u043b\\u0438\\u043d\",\"username\":\"gshumilin\",\"language_code\":\"ru\"},\"message\":{\"message_id\":898,\"from\":{\"id\":2141433601,\"is_bot\":true,\"first_name\":\"shumilin-test-bot\",\"username\":\"shumilin_test_bot\"},\"chat\":{\"id\":477872581,\"first_name\":\"\\u0413\\u0435\\u043d\\u0430\",\"last_name\":\"\\u0428\\u0443\\u043c\\u0438\\u043b\\u0438\\u043d\",\"username\":\"gshumilin\",\"type\":\"private\"},\"date\":1645006411,\"text\":\"Choose your destiny\",\"reply_markup\":{\"inline_keyboard\":[[{\"text\":\"1\",\"callback_data\":\"1\"}],[{\"text\":\"2\",\"callback_data\":\"2\"}],[{\"text\":\"3\",\"callback_data\":\"3\"}]]}},\"chat_instance\":\"3398924605723976319\",\"data\":\"1\"}}]}"
+STATUS : start update processing
+STATUS : Got callback from "gshumilin", chat_ID: 477872581
+sendMessage to "gshumilin", chat_ID: 477872581
+STATUS : Sended request for updates to Telegram
+Got updates: 
+"{\"ok\":true,\"result\":[{\"update_id\":807401014,\n\"message\":{\"message_id\":900,\"from\":{\"id\":477872581,\"is_bot\":false,\"first_name\":\"\\u0413\\u0435\\u043d\\u0430\",\"last_name\":\"\\u0428\\u0443\\u043c\\u0438\\u043b\\u0438\\u043d\",\"username\":\"gshumilin\",\"language_code\":\"ru\"},\"chat\":{\"id\":477872581,\"first_name\":\"\\u0413\\u0435\\u043d\\u0430\",\"last_name\":\"\\u0428\\u0443\\u043c\\u0438\\u043b\\u0438\\u043d\",\"username\":\"gshumilin\",\"type\":\"private\"},\"date\":1645006415,\"text\":\"4654\"}}]}"
+STATUS : start update processing
+sendMessage to "gshumilin", chat_ID: 477872581
+End of multiple sending
+STATUS : Sended request for updates to Telegram
