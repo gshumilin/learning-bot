@@ -60,8 +60,7 @@ data Command
     deriving (Show, Eq)
 
 data InlineKeyboardMarkup
-    = InlineKeyboardMarkup  {inlineKeyboard :: [[InlineKeyboardButton]]
-                            }
+    = InlineKeyboardMarkup { inlineKeyboardMarkup :: [ [InlineKeyboardButton] ] }
     deriving (Show, Eq)
     
 data InlineKeyboardButton 
@@ -82,3 +81,21 @@ data Settings
                 , repeatValue   :: Int
                 }
     deriving (Show, Read, Eq)
+
+data Configurations
+    = Configurations    { token :: String
+                        , requestHost :: String
+                        , requestPort :: String
+                        , timeout :: Int
+                        , logPath :: String
+                        , settingsPath :: String
+                        , defaultRepeatValue :: Int
+                        , commandMessagesText :: CommandMessagesText 
+                        , repeatKeyboardMarkup :: [[InlineKeyboardButton]]
+                        } deriving Show
+
+data CommandMessagesText
+    = CommandMessagesText   { help :: String
+                            , repeat :: String
+                            , unknown :: String
+                            } deriving Show
