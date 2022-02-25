@@ -58,6 +58,11 @@ instance FromJSON Chat where
         chatUserName    <- cht .: "username"
         return $ Chat {..}
 
+instance FromJSON InlineKeyboardMarkup where
+    parseJSON (Object mrp) = do
+        inlineKeyboardMarkup      <- mrp .: "repeatInlineKeyboardMarkup"
+        return $ InlineKeyboardMarkup {..}
+
 instance FromJSON InlineKeyboardButton where
     parseJSON (Object btn) = do
         buttonText      <- btn .: "text"
@@ -71,3 +76,27 @@ instance FromJSON Callback where
         callbackQuestion <- msg .: "text"
         callbackAnswer   <- clb .: "data"
         return $ Callback {..}
+
+
+instance FromJSON Configurations where
+    parseJSON (Object cfg) = do
+        token                <- cfg .: "token"
+        requestHost          <- cfg .: "requestHost"
+        requestPort          <- cfg .: "requestPort"
+        timeout              <- cfg .: "timeout"
+        logPath              <- cfg .: "logPath"
+        settingsPath         <- cfg .: "settingsPath"
+        defaultRepeatValue   <- cfg .: "defaultRepeatValue"
+        commandMessagesText  <- cfg .: "commandMessagesText"
+        repeatKeyboardMarkup <- cfg .: "repeatKeyboardMarkup"
+        return $ Configurations {..}       
+
+instance FromJSON CommandMessagesText where
+    parseJSON (Object txt) = do
+        help    <- txt .: "help"
+        repeat  <- txt .: "repeat"
+        unknown <- txt .: "unknown"
+        return $ CommandMessagesText {..}     
+
+    
+        

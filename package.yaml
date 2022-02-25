@@ -29,6 +29,7 @@ dependencies:
 - directory
 - unordered-containers
 - vector
+- mtl
 
 library:
   source-dirs: src

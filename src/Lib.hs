@@ -2,6 +2,7 @@
 
 module Lib where
 
+import           Control.Monad.Reader
 import           Network.HTTP.Simple
 import qualified Data.ByteString.Char8 as BS
 import           Data.Aeson
@@ -15,13 +16,12 @@ import           Data.List
 import           TelegramTypes
 import           TelegramFromJSON
 import           TelegramToJSON
-import           BotConfig
 import           Control.Monad
 import           Data.Foldable (asum)
 import           UsersSettings
 
-botRun :: Integer -> IO ()
-botRun offset = do
+botRun :: Reader Configurations (IO ())
+botRun = do
     mbUpdates <- (getUpdates offset) 
     case mbUpdates of
         Nothing -> do 
@@ -151,3 +151,9 @@ addLog :: String -> IO ()
 addLog log = do
     putStrLn log
     appendFile exampleLogPath (log ++ "\n")  
+
+parseConfig :: IO (Configurations)
+parseConfig = do 
+    rawJSON <- BS.readFile "/home/shoomaker/Haskell/myProjects/learning-bot/src/botConfig.json"
+    let result = decodeStrict rawJSON
+    return (result)

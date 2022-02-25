@@ -5,8 +5,6 @@ module UsersSettings where
 import           TelegramTypes
 import qualified Data.Text as T
 import           Data.List
-import           BotConfig
-
 usersSettings :: IO [Settings]
 usersSettings = do
     str <- readFile exampleUsersSetingsPath

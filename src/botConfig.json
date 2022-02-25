@@ -1,0 +1,18 @@
+{
+    "token" : "bot",
+    "requestHost" : "api.telegram.org",
+    "requestPort" : "443",
+    "timeout" : 60,
+    "logPath" : "/home/shoomaker/Haskell/myProjects/learning-bot/Logs.txt",
+    "settingsPath" : "/home/shoomaker/Haskell/myProjects/learning-bot/src/usersSettingsText.txt",
+    "defaultRepeatValue" : 1,
+    "commandMessagesText" : {
+        "help" : "Send me a message, and I resend this message to you.\nSend me \"/repeat\" to chose number of repetitions",
+        "repeat" : "Choose your destiny",
+        "unknown" : "I dont know this command. Say, what?"
+                              },
+    "repeatInlineKeyboardMarkup" : [ [ {"text" : "1", "callback_data" : "1"} ]
+                                   , [ {"text" : "2", "callback_data" : "2"} ]
+                                   , [ {"text" : "3", "callback_data" : "3"} ]
+                                   ]
+}
