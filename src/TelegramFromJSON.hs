@@ -92,9 +92,9 @@ instance FromJSON Configurations where
 
 instance FromJSON ConfCommandMessages where
     parseJSON (Object txt) = do
-        help    <- txt .: "help"
-        repeat  <- txt .: "repeat"
-        unknown <- txt .: "unknown"
+        helpCommand    <- txt .: "helpCommand"
+        repeatCommand  <- txt .: "repeatCommand"
+        unknownCommand <- txt .: "unknownCommand"
         return $ ConfCommandMessages {..}     
 
 instance FromJSON ServiceMessage where

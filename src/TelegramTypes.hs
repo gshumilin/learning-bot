@@ -94,9 +94,9 @@ data Configurations
                         } deriving Show
 
 data ConfCommandMessages
-    = ConfCommandMessages   { help    :: ServiceMessage
-                            , repeat  :: ServiceMessage
-                            , unknown :: ServiceMessage
+    = ConfCommandMessages   { helpCommand    :: ServiceMessage
+                            , repeatCommand  :: ServiceMessage
+                            , unknownCommand :: ServiceMessage
                             } deriving Show
 
 data ServiceMessage

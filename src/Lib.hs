@@ -20,13 +20,13 @@ import           Control.Monad
 import           Data.Foldable (asum)
 import           UsersSettings
 
-botRun :: Reader Configurations (IO ())
-botRun = do
-    mbUpdates <- (getUpdates offset) 
+botRun :: Integer -> IO ()
+botRun inputOffset = do
+    mbUpdates <- (getUpdates inputOffset) 
     case mbUpdates of
         Nothing -> do 
             addLog      "ERROR : getUpdates return Nothing whith this offset"
-            botRun (offset + 1)
+            botRun (inputOffset + 1)
         Just updates -> do  
             if ((updatesStatus updates) == False)
                 then do
@@ -36,29 +36,36 @@ botRun = do
                     if null updatesArray
                         then do
                             addLog      "STATUS : empty update"
-                            botRun offset
+                            botRun inputOffset
                         else do
                             addLog      "STATUS : start update processing"
                             updateProcessing echoMesseging updatesArray
                             botRun (extractNewOffset updatesArray)
 
 getUpdates :: Integer -> IO (Maybe Updates)
-getUpdates intOffset = do
-    let token   = exampleTelegramToken
-    let method  = "getUpdates"
-    let offset  = BS.pack . show $ intOffset
-    let request = setRequestHost        "api.telegram.org"
-                $ setRequestPort        443
+getUpdates intOffset = runReaderT (  do
+    host' <- asks confRequestHost
+    let host = T.encodeUtf8 $ host'
+    port <- asks confRequestPort
+    token' <- asks confToken
+    let token = T.encodeUtf8 $ token'
+    let method = "getUpdates"
+    let offset = BS.pack . show $ intOffset
+    timeout' <- asks confTimeout
+    let timeout = BS.pack . show $ timeout'
+    let request = setRequestHost        host
+                $ setRequestPort        port
                 $ setRequestSecure      True
                 $ setRequestPath        ("/" <> token <> "/" <> method)
-                $ setRequestQueryString [("offset" , Just offset), ("timeout", exampleTimeout)]
+                $ setRequestQueryString [("offset" , Just offset), ("timeout", Just timeout)]
                 defaultRequest
-    addLog      "STATUS : Sended request for updates to Telegram"   
     response <- httpBS request
+    lift $ addLog "STATUS : Sended request for updates to Telegram"   
     let responesBody = getResponseBody response 
     let updates = decodeStrict responesBody
-    addLog $ "Got updates: \n" ++ show responesBody
-    return updates      
+    lift $ addLog $ "Got updates: \n" ++ show responesBody
+    return updates                   
+            ) xs 
 
 updateProcessing :: (Message -> IO ()) -> [Update] -> IO ()
 updateProcessing fx []          = putStrLn "End of upd"
@@ -73,25 +80,23 @@ updateProcessing fx (x : xs)    =
             CommandMessage {..} -> doCommand message
             _                   -> fx message
         updateProcessing fx xs
-
-sendMessage :: Message -> IO ()
-sendMessage msg = do
-    let token       = exampleTelegramToken
-    let method      = case msg of
-            StickerMessage {..}     -> "sendSticker"
-            AnimationMessage {..}   -> "sendAnimation"
-            _                       -> "sendMessage"
-    let request = setRequestHost        exampleRequestHost
-                $ setRequestPort        exampleRequestPort
-                $ setRequestSecure      True
-                $ setRequestPath        ("/" <> token <> "/" <> method)
-                $ setRequestBodyJSON    msg
-                $ setRequestMethod      "POST"
-                defaultRequest
-    response <- httpBS request
-    let logText = (BS.unpack method) ++ " to " ++ (show . chatUserName . chat $ msg) ++ ", chat_ID: " ++ (show . chatID . chat $ msg)
-    addLog logText
-    putStrLn logText
+  
+echoMesseging :: Message -> IO ()
+echoMesseging msg = runReaderT (do
+    let currChatID      = chatID . chat $ msg 
+    currSettings        <- lift $ getUserSettings currChatID
+    case currSettings of
+        Nothing         -> do
+            defaultValueRepeat <- asks confDefaultRepeatValue
+            lift $ addLog      "STATUS : getUserSettings in echoMesseging returns Nothing"
+            lift $ appendUsersSettings $ Settings   { settingsChat = chat msg
+                                                    , repeatValue  = defaultValueRepeat
+                                                    }
+            lift $ multipleSending defaultValueRepeat msg
+        Just settings   -> do
+            let currRepeatValue = repeatValue settings
+            lift $ multipleSending (repeatValue settings) msg
+    ) xs
 
 multipleSending :: Int -> Message -> IO ()
 multipleSending 0 msg = do
@@ -100,33 +105,46 @@ multipleSending n msg = do
     sendMessage msg
     multipleSending (n-1) msg
 
-echoMesseging :: Message -> IO ()
-echoMesseging msg = do
-    let currChatID      = chatID . chat $ msg 
-    currSettings        <- getUserSettings currChatID
-    case currSettings of
-        Nothing         -> do
-            addLog      "STATUS : getUserSettings in echoMesseging returns Nothing"
-            appendUsersSettings $ Settings  { settingsChat = chat msg
-                                            , repeatValue  = defaultValueRepeat
-                                            }
-            multipleSending defaultValueRepeat msg
-        Just settings   -> do
-            let currRepeatValue = repeatValue settings
-            multipleSending (repeatValue settings) msg
+sendMessage :: Message -> IO ()
+sendMessage msg = runReaderT (do
+    host' <- asks confRequestHost
+    let host = T.encodeUtf8 $ host'
+    port <- asks confRequestPort
+    token' <- asks confToken
+    let token = T.encodeUtf8 $ token'
+    let method      = case msg of
+            StickerMessage {..}     -> "sendSticker"
+            AnimationMessage {..}   -> "sendAnimation"
+            _                       -> "sendMessage"
+    let request = setRequestHost        host
+                $ setRequestPort        port
+                $ setRequestSecure      True
+                $ setRequestPath        ("/" <> token <> "/" <> method)
+                $ setRequestBodyJSON    msg
+                $ setRequestMethod      "POST"
+                defaultRequest
+    response <- httpBS request
+    let logText = (BS.unpack method) ++ " to " ++ (show . chatUserName . chat $ msg) ++ ", chat_ID: " ++ (show . chatID . chat $ msg)
+    lift $ addLog logText  
+    ) xs
 
 doCommand :: Message -> IO ()
-doCommand (CommandMessage aChat aCommand) = do
+doCommand (CommandMessage aChat aCommand) = runReaderT (do
     case aCommand of
         Help            -> do 
-            sendMessage (TextMessage aChat exampleHelpMessage)
-            addLog "Help command was done"
+            helpText <- asks (serviceMessageText . helpCommand . confCommandMessages)
+            lift $ sendMessage (TextMessage aChat helpText)
+            lift $ addLog "Help command was done"
         Repeat          -> do 
-            sendMessage (ButtonMessage aChat exampleRepeatMessageText exampleRepeatMessageKeyboard)
-            addLog "Repeat command was done"
+            repeatText <- asks (serviceMessageText . repeatCommand . confCommandMessages)
+            repeatKeyboard <- asks (serviceMessageKeyboard . repeatCommand . confCommandMessages)
+            lift $ sendMessage (ButtonMessage aChat repeatText (fromJust repeatKeyboard))
+            lift $ addLog "Repeat command was done"
         UnknownCommand  -> do 
-            sendMessage (TextMessage aChat exampleUncnownCommandMessage)
-            addLog "UnknownCommand command was done"
+            unknownText <- asks (serviceMessageText . unknownCommand . confCommandMessages)
+            lift $ sendMessage (TextMessage aChat unknownText)
+            lift $ addLog "UnknownCommand command was done"
+    ) xs
 doCommand _ = do 
     addLog "somehow doCommand was vizvana with not command message"
 
@@ -142,17 +160,24 @@ callBackProcessing Callback {..} = do
                                 }
 
 appendUsersSettings :: Settings -> IO ()
-appendUsersSettings settings = appendFile exampleUsersSetingsPath (show settings ++ "\n")
+appendUsersSettings settings = runReaderT (do 
+    settingsPath' <- asks confSettingsPath
+    let settingsPath = T.unpack settingsPath'
+    lift $ appendFile settingsPath (show settings ++ "\n")
+    ) xs
 
 extractNewOffset :: [Update] -> Integer 
 extractNewOffset updArray = (+1) . updateID . last $ updArray
 
 addLog :: String -> IO ()
-addLog log = do
-    putStrLn log
-    appendFile exampleLogPath (log ++ "\n")  
+addLog log = runReaderT (do 
+    logPath' <- asks confLogPath
+    let logPath = T.unpack logPath'
+    lift $ putStrLn log
+    lift $ appendFile logPath (log ++ "\n")
+    ) xs  
 
-parseConfig :: IO (Configurations)
+parseConfig :: IO (Maybe Configurations)
 parseConfig = do 
     rawJSON <- BS.readFile "/home/shoomaker/Haskell/myProjects/learning-bot/src/botConfig.json"
     let result = decodeStrict rawJSON

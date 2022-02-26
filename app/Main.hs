@@ -7,5 +7,4 @@ import           Lib
 main :: IO ()
 main = do 
     addLog      "______________Telegram bot started______________\n"
-    config <- parseConfig
-    runReader botRun config
+    botRun 0
