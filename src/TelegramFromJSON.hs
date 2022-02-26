@@ -60,7 +60,7 @@ instance FromJSON Chat where
 
 instance FromJSON InlineKeyboardMarkup where
     parseJSON (Object mrp) = do
-        inlineKeyboardMarkup      <- mrp .: "repeatInlineKeyboardMarkup"
+        inlineKeyboard      <- mrp .: "inlineKeyboardMarkup"
         return $ InlineKeyboardMarkup {..}
 
 instance FromJSON InlineKeyboardButton where
@@ -80,23 +80,28 @@ instance FromJSON Callback where
 
 instance FromJSON Configurations where
     parseJSON (Object cfg) = do
-        token                <- cfg .: "token"
-        requestHost          <- cfg .: "requestHost"
-        requestPort          <- cfg .: "requestPort"
-        timeout              <- cfg .: "timeout"
-        logPath              <- cfg .: "logPath"
-        settingsPath         <- cfg .: "settingsPath"
-        defaultRepeatValue   <- cfg .: "defaultRepeatValue"
-        commandMessagesText  <- cfg .: "commandMessagesText"
-        repeatKeyboardMarkup <- cfg .: "repeatKeyboardMarkup"
+        confToken               <- cfg .: "confToken"
+        confRequestHost         <- cfg .: "confRequestHost"
+        confRequestPort         <- cfg .: "confRequestPort"
+        confTimeout             <- cfg .: "confTimeout"
+        confLogPath             <- cfg .: "confLogPath"
+        confSettingsPath        <- cfg .: "confSettingsPath"
+        confDefaultRepeatValue  <- cfg .: "confDefaultRepeatValue"
+        confCommandMessages     <- cfg .: "confCommandMessages"
         return $ Configurations {..}       
 
-instance FromJSON CommandMessagesText where
+instance FromJSON ConfCommandMessages where
     parseJSON (Object txt) = do
         help    <- txt .: "help"
         repeat  <- txt .: "repeat"
         unknown <- txt .: "unknown"
-        return $ CommandMessagesText {..}     
+        return $ ConfCommandMessages {..}     
+
+instance FromJSON ServiceMessage where
+    parseJSON (Object msg) = do
+        serviceMessageText      <- msg .: "text"
+        serviceMessageKeyboard  <- msg .:? "commandContent" .!= Nothing
+        return $ ServiceMessage {..}    
 
     
         

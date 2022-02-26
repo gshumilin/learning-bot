@@ -52,3 +52,12 @@ STATUS : start update processing
 sendMessage to "gshumilin", chat_ID: 477872581
 End of multiple sending
 STATUS : Sended request for updates to Telegram
+STATUS : Sended request for updates to Telegram
+Got updates: 
+"{\"ok\":false,\"error_code\":404,\"description\":\"Not Found\"}"
+STATUS : Sended request for updates to Telegram
+Got updates: 
+"{\"ok\":false,\"error_code\":401,\"description\":\"Unauthorized\"}"
+STATUS : Sended request for updates to Telegram
+Got updates: 
+"{\"ok\":true,\"result\":[{\"update_id\":807401015,\n\"message\":{\"message_id\":902,\"from\":{\"id\":477872581,\"is_bot\":false,\"first_name\":\"\\u0413\\u0435\\u043d\\u0430\",\"last_name\":\"\\u0428\\u0443\\u043c\\u0438\\u043b\\u0438\\u043d\",\"username\":\"gshumilin\",\"language_code\":\"ru\"},\"chat\":{\"id\":477872581,\"first_name\":\"\\u0413\\u0435\\u043d\\u0430\",\"last_name\":\"\\u0428\\u0443\\u043c\\u0438\\u043b\\u0438\\u043d\",\"username\":\"gshumilin\",\"type\":\"private\"},\"date\":1645795059,\"text\":\"44\"}}]}"

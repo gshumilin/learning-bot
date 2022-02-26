@@ -52,7 +52,7 @@ data Chat
     deriving (Show, Read, Eq)
 
 
-data Entities = Entities {entitiesType :: String
+data Entities = Entities {entitiesType :: T.Text
                          } deriving (Show, Eq)
 
 data Command 
@@ -60,7 +60,7 @@ data Command
     deriving (Show, Eq)
 
 data InlineKeyboardMarkup
-    = InlineKeyboardMarkup { inlineKeyboardMarkup :: [ [InlineKeyboardButton] ] }
+    = InlineKeyboardMarkup { inlineKeyboard :: [ [InlineKeyboardButton] ] }
     deriving (Show, Eq)
     
 data InlineKeyboardButton 
@@ -83,19 +83,23 @@ data Settings
     deriving (Show, Read, Eq)
 
 data Configurations
-    = Configurations    { token :: String
-                        , requestHost :: String
-                        , requestPort :: String
-                        , timeout :: Int
-                        , logPath :: String
-                        , settingsPath :: String
-                        , defaultRepeatValue :: Int
-                        , commandMessagesText :: CommandMessagesText 
-                        , repeatKeyboardMarkup :: [[InlineKeyboardButton]]
+    = Configurations    { confToken :: T.Text
+                        , confRequestHost :: T.Text
+                        , confRequestPort :: Int
+                        , confTimeout :: Int
+                        , confLogPath :: T.Text
+                        , confSettingsPath :: T.Text
+                        , confDefaultRepeatValue :: Int
+                        , confCommandMessages :: ConfCommandMessages 
                         } deriving Show
 
-data CommandMessagesText
-    = CommandMessagesText   { help :: String
-                            , repeat :: String
-                            , unknown :: String
+data ConfCommandMessages
+    = ConfCommandMessages   { help    :: ServiceMessage
+                            , repeat  :: ServiceMessage
+                            , unknown :: ServiceMessage
                             } deriving Show
+
+data ServiceMessage
+    = ServiceMessage { serviceMessageText     :: T.Text
+                     , serviceMessageKeyboard :: Maybe InlineKeyboardMarkup
+                     } deriving Show
