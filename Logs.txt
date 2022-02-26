@@ -164,3 +164,102 @@ Got updates:
 STATUS : start update processing
 sendMessage to "gshumilin", chat_ID: 477872581
 End of multiple sending
+STATUS : Sended request for updates to Telegram
+Got updates: 
+"{\"ok\":true,\"result\":[]}"
+STATUS : Sended request for updates to Telegram
+Got updates: 
+"{\"ok\":true,\"result\":[]}"
+STATUS : Sended request for updates to Telegram
+Got updates: 
+"{\"ok\":true,\"result\":[]}"
+STATUS : Sended request for updates to Telegram
+Got updates: 
+"{\"ok\":true,\"result\":[]}"
+STATUS : Sended request for updates to Telegram
+Got updates: 
+"{\"ok\":true,\"result\":[{\"update_id\":807401035,\n\"message\":{\"message_id\":945,\"from\":{\"id\":477872581,\"is_bot\":false,\"first_name\":\"\\u0413\\u0435\\u043d\\u0430\",\"last_name\":\"\\u0428\\u0443\\u043c\\u0438\\u043b\\u0438\\u043d\",\"username\":\"gshumilin\",\"language_code\":\"ru\"},\"chat\":{\"id\":477872581,\"first_name\":\"\\u0413\\u0435\\u043d\\u0430\",\"last_name\":\"\\u0428\\u0443\\u043c\\u0438\\u043b\\u0438\\u043d\",\"username\":\"gshumilin\",\"type\":\"private\"},\"date\":1645876114,\"text\":\"1\"}}]}"
+STATUS : start update processing
+sendMessage to "gshumilin", chat_ID: 477872581
+End of multiple sending
+STATUS : Sended request for updates to Telegram
+Got updates: 
+"{\"ok\":true,\"result\":[{\"update_id\":807401036,\n\"message\":{\"message_id\":947,\"from\":{\"id\":477872581,\"is_bot\":false,\"first_name\":\"\\u0413\\u0435\\u043d\\u0430\",\"last_name\":\"\\u0428\\u0443\\u043c\\u0438\\u043b\\u0438\\u043d\",\"username\":\"gshumilin\",\"language_code\":\"ru\"},\"chat\":{\"id\":477872581,\"first_name\":\"\\u0413\\u0435\\u043d\\u0430\",\"last_name\":\"\\u0428\\u0443\\u043c\\u0438\\u043b\\u0438\\u043d\",\"username\":\"gshumilin\",\"type\":\"private\"},\"date\":1645876122,\"text\":\"23\"}}]}"
+STATUS : start update processing
+sendMessage to "gshumilin", chat_ID: 477872581
+End of multiple sending
+STATUS : Sended request for updates to Telegram
+Got updates: 
+"{\"ok\":true,\"result\":[{\"update_id\":807401037,\n\"message\":{\"message_id\":949,\"from\":{\"id\":477872581,\"is_bot\":false,\"first_name\":\"\\u0413\\u0435\\u043d\\u0430\",\"last_name\":\"\\u0428\\u0443\\u043c\\u0438\\u043b\\u0438\\u043d\",\"username\":\"gshumilin\",\"language_code\":\"ru\"},\"chat\":{\"id\":477872581,\"first_name\":\"\\u0413\\u0435\\u043d\\u0430\",\"last_name\":\"\\u0428\\u0443\\u043c\\u0438\\u043b\\u0438\\u043d\",\"username\":\"gshumilin\",\"type\":\"private\"},\"date\":1645876125,\"text\":\"/help\",\"entities\":[{\"offset\":0,\"length\":5,\"type\":\"bot_command\"}]}}]}"
+STATUS : start update processing
+sendMessage to "gshumilin", chat_ID: 477872581
+Help command was done
+STATUS : Sended request for updates to Telegram
+Got updates: 
+"{\"ok\":true,\"result\":[{\"update_id\":807401038,\n\"message\":{\"message_id\":951,\"from\":{\"id\":477872581,\"is_bot\":false,\"first_name\":\"\\u0413\\u0435\\u043d\\u0430\",\"last_name\":\"\\u0428\\u0443\\u043c\\u0438\\u043b\\u0438\\u043d\",\"username\":\"gshumilin\",\"language_code\":\"ru\"},\"chat\":{\"id\":477872581,\"first_name\":\"\\u0413\\u0435\\u043d\\u0430\",\"last_name\":\"\\u0428\\u0443\\u043c\\u0438\\u043b\\u0438\\u043d\",\"username\":\"gshumilin\",\"type\":\"private\"},\"date\":1645876127,\"text\":\"/repeat\",\"entities\":[{\"offset\":0,\"length\":7,\"type\":\"bot_command\"}]}}]}"
+STATUS : start update processing
+sendMessage to "gshumilin", chat_ID: 477872581
+Repeat command was done
+STATUS : Sended request for updates to Telegram
+Got updates: 
+"{\"ok\":true,\"result\":[{\"update_id\":807401039,\n\"callback_query\":{\"id\":\"2052447107074836805\",\"from\":{\"id\":477872581,\"is_bot\":false,\"first_name\":\"\\u0413\\u0435\\u043d\\u0430\",\"last_name\":\"\\u0428\\u0443\\u043c\\u0438\\u043b\\u0438\\u043d\",\"username\":\"gshumilin\",\"language_code\":\"ru\"},\"message\":{\"message_id\":952,\"from\":{\"id\":2141433601,\"is_bot\":true,\"first_name\":\"shumilin-test-bot\",\"username\":\"shumilin_test_bot\"},\"chat\":{\"id\":477872581,\"first_name\":\"\\u0413\\u0435\\u043d\\u0430\",\"last_name\":\"\\u0428\\u0443\\u043c\\u0438\\u043b\\u0438\\u043d\",\"username\":\"gshumilin\",\"type\":\"private\"},\"date\":1645876127,\"text\":\"Choose your destiny\",\"reply_markup\":{\"inline_keyboard\":[[{\"text\":\"1\",\"callback_data\":\"1\"}],[{\"text\":\"2\",\"callback_data\":\"2\"}],[{\"text\":\"3\",\"callback_data\":\"3\"}]]}},\"chat_instance\":\"3398924605723976319\",\"data\":\"3\"}}]}"
+STATUS : start update processing
+STATUS : Got callback from "gshumilin", chat_ID: 477872581
+sendMessage to "gshumilin", chat_ID: 477872581
+STATUS : Sended request for updates to Telegram
+Got updates: 
+"{\"ok\":true,\"result\":[{\"update_id\":807401040,\n\"message\":{\"message_id\":954,\"from\":{\"id\":477872581,\"is_bot\":false,\"first_name\":\"\\u0413\\u0435\\u043d\\u0430\",\"last_name\":\"\\u0428\\u0443\\u043c\\u0438\\u043b\\u0438\\u043d\",\"username\":\"gshumilin\",\"language_code\":\"ru\"},\"chat\":{\"id\":477872581,\"first_name\":\"\\u0413\\u0435\\u043d\\u0430\",\"last_name\":\"\\u0428\\u0443\\u043c\\u0438\\u043b\\u0438\\u043d\",\"username\":\"gshumilin\",\"type\":\"private\"},\"date\":1645876130,\"text\":\"s\"}}]}"
+STATUS : start update processing
+sendMessage to "gshumilin", chat_ID: 477872581
+sendMessage to "gshumilin", chat_ID: 477872581
+sendMessage to "gshumilin", chat_ID: 477872581
+End of multiple sending
+STATUS : Sended request for updates to Telegram
+Got updates: 
+"{\"ok\":true,\"result\":[{\"update_id\":807401041,\n\"message\":{\"message_id\":958,\"from\":{\"id\":477872581,\"is_bot\":false,\"first_name\":\"\\u0413\\u0435\\u043d\\u0430\",\"last_name\":\"\\u0428\\u0443\\u043c\\u0438\\u043b\\u0438\\u043d\",\"username\":\"gshumilin\",\"language_code\":\"ru\"},\"chat\":{\"id\":477872581,\"first_name\":\"\\u0413\\u0435\\u043d\\u0430\",\"last_name\":\"\\u0428\\u0443\\u043c\\u0438\\u043b\\u0438\\u043d\",\"username\":\"gshumilin\",\"type\":\"private\"},\"date\":1645876133,\"animation\":{\"file_name\":\"mp4.mp4\",\"mime_type\":\"video/mp4\",\"duration\":5,\"width\":186,\"height\":198,\"file_id\":\"CgACAgQAAxkBAAIDvmIaE6Xts3AQh7qMNhYJEvGgrvstAAJjAgACtcaUUhUn1yPYAAFpYSME\",\"file_unique_id\":\"AgADYwIAArXGlFI\",\"file_size\":181484},\"document\":{\"file_name\":\"mp4.mp4\",\"mime_type\":\"video/mp4\",\"file_id\":\"CgACAgQAAxkBAAIDvmIaE6Xts3AQh7qMNhYJEvGgrvstAAJjAgACtcaUUhUn1yPYAAFpYSME\",\"file_unique_id\":\"AgADYwIAArXGlFI\",\"file_size\":181484}}}]}"
+STATUS : start update processing
+sendAnimation to "gshumilin", chat_ID: 477872581
+sendAnimation to "gshumilin", chat_ID: 477872581
+sendAnimation to "gshumilin", chat_ID: 477872581
+End of multiple sending
+STATUS : Sended request for updates to Telegram
+Got updates: 
+"{\"ok\":true,\"result\":[{\"update_id\":807401042,\n\"message\":{\"message_id\":962,\"from\":{\"id\":477872581,\"is_bot\":false,\"first_name\":\"\\u0413\\u0435\\u043d\\u0430\",\"last_name\":\"\\u0428\\u0443\\u043c\\u0438\\u043b\\u0438\\u043d\",\"username\":\"gshumilin\",\"language_code\":\"ru\"},\"chat\":{\"id\":477872581,\"first_name\":\"\\u0413\\u0435\\u043d\\u0430\",\"last_name\":\"\\u0428\\u0443\\u043c\\u0438\\u043b\\u0438\\u043d\",\"username\":\"gshumilin\",\"type\":\"private\"},\"date\":1645876137,\"sticker\":{\"width\":512,\"height\":512,\"emoji\":\"\\ud83d\\udc4d\",\"set_name\":\"RickAndMorty\",\"is_animated\":true,\"is_video\":false,\"thumb\":{\"file_id\":\"AAMCAgADGQEAAgPCYhoTqQ97X_T8uBs4wePNipS2jb8AAiYDAAK1cdoGPhkLi-ccGUABAAdtAAMjBA\",\"file_unique_id\":\"AQADJgMAArVx2gZy\",\"file_size\":5174,\"width\":128,\"height\":128},\"file_id\":\"CAACAgIAAxkBAAIDwmIaE6kPe1_0_LgbOMHjzYqUto2_AAImAwACtXHaBj4ZC4vnHBlAIwQ\",\"file_unique_id\":\"AgADJgMAArVx2gY\",\"file_size\":18212}}}]}"
+STATUS : start update processing
+sendSticker to "gshumilin", chat_ID: 477872581
+sendSticker to "gshumilin", chat_ID: 477872581
+sendSticker to "gshumilin", chat_ID: 477872581
+End of multiple sending
+STATUS : Sended request for updates to Telegram
+Got updates: 
+"{\"ok\":true,\"result\":[]}"
+STATUS : empty update
+STATUS : Sended request for updates to Telegram
+Got updates: 
+"{\"ok\":true,\"result\":[]}"
+STATUS : empty update
+STATUS : Sended request for updates to Telegram
+Got updates: 
+"{\"ok\":true,\"result\":[]}"
+STATUS : empty update
+STATUS : Sended request for updates to Telegram
+Got updates: 
+"{\"ok\":true,\"result\":[]}"
+STATUS : empty update
+STATUS : Sended request for updates to Telegram
+Got updates: 
+"{\"ok\":true,\"result\":[]}"
+STATUS : empty update
+______________Telegram bot started______________
+STATUS : Sended request for updates to Telegram
+Got updates: 
+"{\"ok\":true,\"result\":[]}"
+STATUS : empty update
+STATUS : Sended request for updates to Telegram
+Got updates: 
+"{\"ok\":true,\"result\":[]}"
+STATUS : empty update
+STATUS : Sended request for updates to Telegram
+Got updates: 
+"{\"ok\":true,\"result\":[]}"
+STATUS : empty update

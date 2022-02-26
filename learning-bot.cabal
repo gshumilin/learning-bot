@@ -29,7 +29,6 @@ library
       TelegramFromJSON
       TelegramToJSON
       TelegramTypes
-      UsersSettings
   other-modules:
       Paths_learning_bot
   hs-source-dirs:

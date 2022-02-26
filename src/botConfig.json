@@ -2,7 +2,7 @@
     "confToken" : "bot",
     "confRequestHost" : "api.telegram.org",
     "confRequestPort" : 443,
-    "confTimeout" : 60,
+    "confTimeout" : 15,
     "confLogPath" : "/home/shoomaker/Haskell/myProjects/learning-bot/Logs.txt",
     "confSettingsPath" : "/home/shoomaker/Haskell/myProjects/learning-bot/src/usersSettingsText.txt",
     "confDefaultRepeatValue" : 1,
