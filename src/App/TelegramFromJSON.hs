@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings , RecordWildCards #-}
 
-module TelegramFromJSON where
+module App.TelegramFromJSON where
 
 import           Data.Aeson
 import           Data.Aeson.Types
@@ -10,7 +10,7 @@ import qualified Data.Text as T
 import qualified Data.Text.Lazy.IO as T
 import qualified Data.Text.Lazy.Encoding as T
 import           Data.Foldable (asum)
-import           TelegramTypes
+import           Types.Telegram
 
 instance FromJSON Updates where
     parseJSON (Object upds) = do

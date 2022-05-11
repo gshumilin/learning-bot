@@ -1,6 +1,4 @@
-{-# LANGUAGE OverloadedStrings , RecordWildCards #-}
-
-module TelegramTypes where
+module Types.Telegram where
 
 import           Data.Aeson
 import           Data.Aeson.Types
@@ -75,6 +73,8 @@ data Callback
                 , callbackAnswer    :: T.Text
                 }
     deriving (Show, Eq)
+
+type UsersSettings = [Settings]
 
 data Settings 
     = Settings  { settingsChat  :: Chat

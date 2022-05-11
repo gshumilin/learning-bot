@@ -26,8 +26,8 @@ source-repository head
 library
   exposed-modules:
       Lib
-      TelegramFromJSON
-      TelegramToJSON
+      App.TelegramFromJSON
+      App.TelegramToJSON
       TelegramTypes
   other-modules:
       Paths_learning_bot
