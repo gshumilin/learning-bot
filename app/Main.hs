@@ -1,7 +1,7 @@
 module Main where
 
 import Control.Monad.Reader
-import Realisations.BotRun
+import App.BotRun
 import Realisations.Config (parseConfig)
 import Realisations.Logging (addLog)
 

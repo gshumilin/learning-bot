@@ -1,4 +1,4 @@
-module Realisations.Telegram where
+module Realisations.Settings where
 
 import Types.Telegram
 import Data.List (find)
