@@ -4,7 +4,6 @@
     "confRequestPort" : 443,
     "confTimeout" : 15,
     "confLogPath" : "/home/shoomaker/Haskell/myProjects/learning-bot/Logs.txt",
-    "confSettingsPath" : "/home/shoomaker/Haskell/myProjects/learning-bot/src/usersSettingsText.txt",
     "confDefaultRepeatValue" : 1,
     "confCommandMessages" : {
         "helpCommand"   :  { "text" : "Send me a message, and I resend this message to you.\nSend me \"/repeat\" to chose number of repetitions"
