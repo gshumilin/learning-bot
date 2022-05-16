@@ -25,10 +25,19 @@ source-repository head
 
 library
   exposed-modules:
-      Lib
+      App.BotRun
+      App.Handlers.BotRun
       App.TelegramFromJSON
       App.TelegramToJSON
-      TelegramTypes
+      Realisations.Commands
+      Realisations.Config
+      Realisations.EchoMod
+      Realisations.GettingUpdates
+      Realisations.Logging
+      Realisations.SendingMsgs
+      Realisations.Settings
+      Realisations.UpdatesProcessing
+      Types.Telegram
   other-modules:
       Paths_learning_bot
   hs-source-dirs:
