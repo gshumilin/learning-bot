@@ -88,7 +88,6 @@ data Configurations
                         , confRequestPort :: Int
                         , confTimeout :: Int
                         , confLogPath :: T.Text
-                        , confSettingsPath :: T.Text
                         , confDefaultRepeatValue :: Int
                         , confCommandMessages :: ConfCommandMessages 
                         } deriving Show

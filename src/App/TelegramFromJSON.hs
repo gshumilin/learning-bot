@@ -85,7 +85,6 @@ instance FromJSON Configurations where
         confRequestPort         <- cfg .: "confRequestPort"
         confTimeout             <- cfg .: "confTimeout"
         confLogPath             <- cfg .: "confLogPath"
-        confSettingsPath        <- cfg .: "confSettingsPath"
         confDefaultRepeatValue  <- cfg .: "confDefaultRepeatValue"
         confCommandMessages     <- cfg .: "confCommandMessages"
         return $ Configurations {..}       
