@@ -7,7 +7,6 @@ import Types.Telegram
 import Realisations.Logging (addLog)
 import Control.Monad.Reader
 import Realisations.GettingUpdates
-import Realisations.Logging (addLog)
 import Realisations.EchoMod (echoMesseging)
 import Realisations.UpdatesProcessing (updateProcessing)
 

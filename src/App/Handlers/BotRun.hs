@@ -3,12 +3,7 @@
 module App.Handlers.BotRun where
 
 import Types.Telegram
-import Realisations.Logging (addLog)
 import Control.Monad.Reader
-import Realisations.GettingUpdates
-import Realisations.Logging
-import Realisations.EchoMod (echoMesseging)
-import Realisations.UpdatesProcessing (updateProcessing)
 
 data Handle m = Handle { 
     hGetUpdates :: Integer -> ReaderT Configurations m (Maybe Updates),
@@ -24,7 +19,7 @@ botRun handle inputOffset usersSettings = do
         Nothing -> do 
             (hAddLog handle) "ERROR : getUpdates return Nothing whith this offset"
             botRun handle (inputOffset + 1) usersSettings
-        Just updates -> do  
+        Just updates -> do
             if ((updatesStatus updates) == False)
                 then do
                     (hAddLog handle) "ERROR : In Updates ok = false"
