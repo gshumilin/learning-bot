@@ -2,7 +2,10 @@ module App.MessageHandling where
 
 import Data.Text (Text)
 import Types.Config (Config (..))
+import Types.Message (Message (..), ServiceMessages(..))
 import Control.Monad.Reader (asks, ReaderT, lift)
+import Prelude hiding (repeat)
+
 
 data HandleRes = EchoNum Int | AskForRepetitions | AskForRepetitionsAgain | HelpMessage | AcceptRepetitions deriving (Show, Eq) 
 
@@ -32,6 +35,8 @@ handleMessage Handle {..} st msg = do
           pure (AskForRepetitionsAgain, st)
     else
       case hGetText msg of
-        Just "/help" -> lift $ hSendText "some help-message" >> pure (HelpMessage, st)
+        Just "/help" -> do
+          TextMessage txt <- asks (help . serviceMessages)
+          lift $ hSendText txt >> pure (HelpMessage, st)
         Just "/repeat" -> hAskRepetitions >> pure (AskForRepetitions, UserState True (repetitionsNum st))
         _ -> lift $ hSendEcho msg (repetitionsNum st) >> pure (EchoNum (repetitionsNum st), st)

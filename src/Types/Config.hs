@@ -16,8 +16,8 @@ data Config = Config
   , tgTimeout :: Int
   , logPath :: Text
   , defaultRepeatValue :: Int
-  , consoleServiceMessages :: ServiceMessage
-  , tgServiceMessages :: ServiceMessage
+  , serviceMessages :: ServiceMessages
+  , tgServiceMessages :: ServiceMessages
   } deriving (Generic, Show)
 
 instance FromJSON Config where
@@ -32,7 +32,7 @@ instance FromJSON Config where
     tgTimeout <- o .: "tgTimeout"
     logPath <- o .: "logPath"
     defaultRepeatValue <- o .: "defaultRepeatValue"
-    consoleServiceMessages <- o .: "consoleServiceMessages"
+    serviceMessages <- o .: "serviceMessages"
     tgServiceMessages <- o .: "tgServiceMessages"
     pure Config {..}
 

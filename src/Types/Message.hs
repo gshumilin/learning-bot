@@ -26,12 +26,12 @@ instance FromJSON Message where
         pure $ MessageWithKeyboard txt keyboard
       ]
 
-data ServiceMessage = ServiceMessage
+data ServiceMessages = ServiceMessages
   { help :: Message
   , repeat :: Message
   , unknown :: Message
   } deriving (Generic, Show)
-instance FromJSON ServiceMessage
+instance FromJSON ServiceMessages
 
 type KeyboardMarkup = [ [KeyboardButton] ] 
     

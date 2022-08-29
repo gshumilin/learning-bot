@@ -17,9 +17,14 @@ main = hspec . describe "message handler test" $ do
     let sampleMsg = TextMessage "/repeat"
     let result = runReaderT (handleMessage handle sampleSt sampleMsg) sampleConfig
     result `shouldBe` return (AskForRepetitions, UserState True 2)
-  it "Should ask user for repetitions value again, when new value invalid" $ do
+  it "Should ask user for repetitions value again, when new value isn't digit" $ do
     let sampleSt = UserState True 2
     let sampleMsg = TextMessage "bad"
+    let result = runReaderT (handleMessage handle sampleSt sampleMsg) sampleConfig
+    result `shouldBe` return (AskForRepetitionsAgain, UserState True 2)
+  it "Should ask user for repetitions value again, when new value isn't within acceptable limits" $ do
+    let sampleSt = UserState True 2
+    let sampleMsg = TextMessage "0"
     let result = runReaderT (handleMessage handle sampleSt sampleMsg) sampleConfig
     result `shouldBe` return (AskForRepetitionsAgain, UserState True 2)
   it "Should successfully accept new repetitions value" $ do

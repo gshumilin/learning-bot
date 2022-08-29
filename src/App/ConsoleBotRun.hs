@@ -3,7 +3,7 @@ module App.ConsoleBotRun where
 import Control.Monad.Reader 
 import App.MessageHandling
 import Types.Config (Config(..))
-import Types.Message (Message(..), ServiceMessage (..))
+import Types.Message (Message(..), ServiceMessages (..))
 import Text.Read (readMaybe)
 import Data.Text (Text, unpack)
 import qualified Data.Text.IO as T (putStrLn, getLine)
@@ -37,7 +37,7 @@ sendText txt = T.putStrLn txt
 
 askRepetitions :: ReaderT Config IO ()
 askRepetitions = do
-  TextMessage txt <- asks (repeat . consoleServiceMessages)
+  TextMessage txt <- asks (repeat . serviceMessages)
   lift $ sendText txt
 
 getText :: Message -> Maybe Text
@@ -47,4 +47,4 @@ isRepetitionsNum :: Message -> Maybe Int
 isRepetitionsNum (TextMessage txt) = isOkVal =<< mbNum
   where
     mbNum = readMaybe (unpack txt) :: Maybe Int 
-    isOkVal num = if num >= 5 then Nothing else Just num
+    isOkVal num = if num <= 0 && num >= 5 then Nothing else Just num
