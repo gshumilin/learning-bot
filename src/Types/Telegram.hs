@@ -24,25 +24,6 @@ data Update
                         }
     deriving (Show, Eq)
 
-data Message 
-    =   CommandMessage  { chat              :: Chat
-                        , messageCommand    :: Command
-                        } 
-    |   TextMessage     { chat              :: Chat
-                        , messageText       :: T.Text
-                        }
-    |   StickerMessage  { chat              :: Chat
-                        , messageStickerID  :: T.Text
-                        }
-    |   AnimationMessage { chat               :: Chat
-                         , messageAnimationID :: T.Text
-                         }
-    |   ButtonMessage   { chat              :: Chat
-                        , messageText       :: T.Text
-                        , keyboard          :: InlineKeyboardMarkup
-                        }
-    deriving (Show, Eq)
-
 data Chat
     =   Chat    { chatID        :: Int
                 , chatUserName  :: T.Text
