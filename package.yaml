@@ -31,6 +31,10 @@ dependencies:
 - vector
 - mtl
 
+default-extensions:
+- OverloadedStrings
+- RecordWildCards
+
 library:
   source-dirs: src
 
