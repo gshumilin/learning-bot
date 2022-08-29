@@ -16,10 +16,10 @@ data Updates
                 } deriving (Show, Eq)
 
 data Update 
-    =   MessageUpdate   { updateID :: Integer
+    =   MessageUpdate   { updateID :: Int
                         , message  :: Message
                         }
-    |   CallbackUpdate  { updateID :: Integer
+    |   CallbackUpdate  { updateID :: Int
                         , callback :: Callback
                         }
     deriving (Show, Eq)
@@ -44,7 +44,7 @@ data Message
     deriving (Show, Eq)
 
 data Chat
-    =   Chat    { chatID        :: Integer
+    =   Chat    { chatID        :: Int
                 , chatUserName  :: T.Text
                 } 
     deriving (Show, Read, Eq)
@@ -55,16 +55,6 @@ data Entities = Entities {entitiesType :: T.Text
 
 data Command 
     = Help | Repeat | UnknownCommand
-    deriving (Show, Eq)
-
-data InlineKeyboardMarkup
-    = InlineKeyboardMarkup { inlineKeyboard :: [ [InlineKeyboardButton] ] }
-    deriving (Show, Eq)
-    
-data InlineKeyboardButton 
-    = InlineKeyboardButton  { buttonText    :: T.Text
-                            , callbackData  :: T.Text
-                            }
     deriving (Show, Eq)
 
 data Callback
@@ -81,24 +71,3 @@ data Settings
                 , repeatValue   :: Int
                 }
     deriving (Show, Read, Eq)
-
-data Configurations
-    = Configurations    { confToken :: T.Text
-                        , confRequestHost :: T.Text
-                        , confRequestPort :: Int
-                        , confTimeout :: Int
-                        , confLogPath :: T.Text
-                        , confDefaultRepeatValue :: Int
-                        , confCommandMessages :: ConfCommandMessages 
-                        } deriving Show
-
-data ConfCommandMessages
-    = ConfCommandMessages   { helpCommand    :: ServiceMessage
-                            , repeatCommand  :: ServiceMessage
-                            , unknownCommand :: ServiceMessage
-                            } deriving Show
-
-data ServiceMessage
-    = ServiceMessage { serviceMessageText     :: T.Text
-                     , serviceMessageKeyboard :: Maybe InlineKeyboardMarkup
-                     } deriving Show

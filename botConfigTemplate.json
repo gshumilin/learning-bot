@@ -1,11 +1,12 @@
 {
-    "confToken" : "bot...",
-    "confRequestHost" : "api.telegram.org",
-    "confRequestPort" : 443,
-    "confTimeout" : 15,
-    "confLogPath" : "Logs.txt",
-    "confDefaultRepeatValue" : 1,
-    "confCommandMessages" : {
+    "frontEndType": "console  /  telegram" ,
+    "tgToken" : "bot...",
+    "tgRequestHost" : "api.telegram.org",
+    "tgRequestPort" : 443,
+    "tgTimeout" : 15,
+    "logPath" : "Logs.txt",
+    "defaultRepeatValue" : 1,
+    "commandMessages" : {
         "helpCommand"   :  { "text" : "Send me a message, and I resend this message to you.\nSend me \"/repeat\" to chose number of repetitions"
                     },
         "repeatCommand" :  { "text" : "Choose your destiny", 
