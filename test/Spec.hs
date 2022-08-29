@@ -50,4 +50,3 @@ handle = Handle
 
 sampleConfig :: Config
 sampleConfig = undefined
--- EchoNum Int | AskForRepetitions | AskForRepetitionsAgain | HelpMessage | AcceptRepetitions

@@ -2,7 +2,7 @@ module App.ConsoleBotRun where
 
 import Control.Monad.Reader 
 import App.MessageHandling
-import Types.Config (Config(..), ConfCommandMessages (..))
+import Types.Config (Config(..))
 import Types.Message (Message(..))
 import Text.Read (readMaybe)
 import Data.Text (Text, unpack)
@@ -36,7 +36,7 @@ sendText txt = T.putStrLn txt
 
 askRepetitions :: ReaderT Config IO ()
 askRepetitions = do
-  txt <- asks (askRepeat . commandMessages)
+  txt <- asks (repeat . consoleServiceMessages)
   lift $ sendText "Choose your destiny"
 
 getText :: Message -> Maybe Text

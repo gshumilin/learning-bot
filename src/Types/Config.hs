@@ -16,17 +16,10 @@ data Config = Config
   , tgTimeout :: Int
   , logPath :: Text
   , defaultRepeatValue :: Int
-  , commandMessages :: ConfCommandMessages 
+  , consoleServiceMessages :: ServiceMessage
+  , tgServiceMessages :: ServiceMessage
   } deriving (Generic, Show)
 instance FromJSON Config
-
-data ConfCommandMessages = ConfCommandMessages
-  { help      :: ServiceMessage
-  , repeat    :: ServiceMessage
-  , askRepeat :: ServiceMessage
-  , unknown   :: ServiceMessage
-  } deriving (Generic, Show)
-instance FromJSON ConfCommandMessages
 
 data FrontEndType = ConsoleFrontEnd | TelegramFrontEnd deriving Show
 

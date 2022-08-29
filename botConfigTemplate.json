@@ -5,21 +5,30 @@
   "tgTimeout" : 15,
   "logPath" : "Logs.txt",
   "defaultRepeatValue" : 1,
-  "commandMessages" : 
-    { "helpCommand" :  
+  "consoleServiceMessages" : 
+    { "help" : 
         { "text" : "Send me a message, and I resend this message to you.\nSend me \"/repeat\" to chose number of repetitions"
         },
-      "repeatCommand" :  
+      "repeat" : 
+        { "text" : "Choose your destiny. Enter value from 1 to 5"
+        },
+      "unknown" : 
+        { "text" : "I dont know this command. Say, what?"
+        }
+    },
+  "tgServiceMessages" : 
+    { "help" :  
+        { "text" : "Send me a message, and I resend this message to you.\nSend me \"/repeat\" to chose number of repetitions"
+        },
+      "repeat" :  
         { "text" : "Choose your destiny", 
-          "commandContent" : 
-            { "inlineKeyboardMarkup" :  
+          "inlineKeyboardMarkup" :  
               [ [ {"text" : "1", "callback_data" : "1"} ]
               , [ {"text" : "2", "callback_data" : "2"} ]
               , [ {"text" : "3", "callback_data" : "3"} ]
-              ]
-            } 
+              ] 
         },
-      "unknownCommand" : 
+      "unknown" : 
         { "text" : "I dont know this command. Say, what?"
         }
     }

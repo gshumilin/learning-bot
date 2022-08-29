@@ -2,47 +2,46 @@
 
 module Types.Message where
 
-import Data.Aeson (FromJSON, parseJSON, Value (..), (.:), (.:?), (.!=))
+import Data.Aeson (FromJSON, parseJSON, Value (..), (.:))
 import Data.Aeson.Types ()
 import Control.Monad (mzero)
 import Data.Text (Text)
 import Data.Foldable (asum)
 import GHC.Generics
 
-data Message = TextMessage Text | StickerMessage Text
+data Message = TextMessage Text | StickerMessage Text | MessageWithKeyboard Text KeyboardMarkup
   deriving (Show)
 
 instance FromJSON Message where
-    parseJSON = undefined
+    parseJSON (Object o) = asum [
+      do
+        txt <- o .: "text"
+        pure $ TextMessage txt ,
+      do
+        txt <- o .: "sticker"
+        pure $ StickerMessage txt ,
+      do
+        txt <- o .: "text"
+        keyboard <- o .: "inlineKeyboardMarkup"
+        pure $ MessageWithKeyboard txt keyboard
+      ]
 
 data ServiceMessage = ServiceMessage
-  { serviceMessageText :: Text
-  , serviceMessageKeyboard :: Maybe InlineKeyboardMarkup
+  { help :: Message
+  , repeat :: Message
+  , unknown :: Message
   } deriving (Generic, Show)
+instance FromJSON ServiceMessage
 
-instance FromJSON ServiceMessage where
-    parseJSON (Object msg) = do
-        serviceMessageText      <- msg .: "text"
-        serviceMessageKeyboard  <- msg .:? "commandContent" .!= Nothing
-        return $ ServiceMessage {..}   
-
-data InlineKeyboardMarkup = InlineKeyboardMarkup 
-  { inlineKeyboard :: [ [InlineKeyboardButton] ] }
-    deriving (Show, Eq)
-
-instance FromJSON InlineKeyboardMarkup where
-  parseJSON (Object mrp) = do
-      inlineKeyboard      <- mrp .: "inlineKeyboardMarkup"
-      return $ InlineKeyboardMarkup {..}
+type KeyboardMarkup = [ [KeyboardButton] ] 
     
-data InlineKeyboardButton 
-    = InlineKeyboardButton  { buttonText    :: Text
-                            , callbackData  :: Text
-                            }
-    deriving (Show, Eq)
+data KeyboardButton = KeyboardButton
+  { buttonText :: Text
+  , callbackData :: Text
+  } deriving (Show, Eq)
 
-instance FromJSON InlineKeyboardButton where
+instance FromJSON KeyboardButton where
     parseJSON (Object btn) = do
-        buttonText      <- btn .: "text"
-        callbackData    <- btn .: "callback_data"
-        return $ InlineKeyboardButton {..}
+        buttonText <- btn .: "text"
+        callbackData <- btn .: "callback_data"
+        return $ KeyboardButton {..}
