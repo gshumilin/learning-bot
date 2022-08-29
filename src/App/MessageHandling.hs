@@ -1,30 +1,37 @@
 module App.MessageHandling where
 
+import Data.Text (Text)
+import Types.Config (Config (..))
+import Control.Monad.Reader (asks, ReaderT, lift)
+
 data HandleRes = EchoNum Int | AskForRepetitions | AskForRepetitionsAgain | HelpMessage | AcceptRepetitions
 
 data Handle m msg = Handle
-  { hSendEcho :: msg -> Int -> m (),
-    hAskRepetitions :: m (),
-    hSendText :: String -> m (),
-    hGetText :: msg -> Maybe String,
-    hIsRepetitionsNum :: msg -> Maybe Int
+  { hSendEcho :: msg -> Int -> m (),        -- отправить переданное сообщение переданное кол-во раз
+    hAskRepetitions :: ReaderT Config m (), -- отправить пользователю сообщение просьбой указать кол-во повторений
+    hSendText :: Text -> m (),              -- отправить текст
+    hGetText :: msg -> Maybe Text,          -- получить текст из сообщения
+    hIsRepetitionsNum :: msg -> Maybe Int   -- проверяем, что юзер прислал в качестве выбора количества повторений
   }
 
-data UserState = UserState { isAskedRepetitions :: Bool, repetitionsNum :: Int }
+data UserState = UserState 
+  { isAskedRepetitions :: Bool            -- находится ли юзер в процессе выбора количества повторений?
+  , repetitionsNum :: Int                 -- кол-во повторений для юзера
+  }
 
-handleUpdate :: Monad m => Handle m msg -> msg -> UserState -> m (HandleRes, UserState)
-handleUpdate Handle {..} msg st = do
+handleMessage :: Monad m => Handle m msg -> UserState -> msg -> ReaderT Config m (HandleRes, UserState)
+handleMessage Handle {..} st msg = do
   if isAskedRepetitions st
     then
-      case hIsRepetitionsNum msg of
+      case hIsRepetitionsNum msg of 
         Just n -> do
-            hSendText "Ok bob"
-            pure (AcceptRepetitions, UserState False n)
+          lift $ hSendText "Ok, new number of repetitions set"
+          pure (AcceptRepetitions, UserState False n)
         Nothing -> do
-            hSendText "Please, specify number from 1 to 5"
-            pure (AskForRepetitionsAgain, st)
+          lift $ hSendText "Please, specify number from 1 to 5"
+          pure (AskForRepetitionsAgain, st)
     else
       case hGetText msg of
-        Just "/help" -> hSendText "Hello, bob" >> pure (HelpMessage, st)
+        Just "/help" -> lift $ hSendText "some help-message" >> pure (HelpMessage, st)
         Just "/repeat" -> hAskRepetitions >> pure (AskForRepetitions, UserState True (repetitionsNum st))
-        _ -> hSendEcho msg (repetitionsNum st) >> pure (EchoNum (repetitionsNum st), st)
+        _ -> lift $ hSendEcho msg (repetitionsNum st) >> pure (EchoNum (repetitionsNum st), st)

@@ -9,21 +9,6 @@ import qualified Data.Text.Lazy.IO as T
 import qualified Data.Text.Lazy.Encoding as T
 import           Data.Foldable (asum)
 
-
-data Updates 
-    =   Updates { updatesStatus :: Bool
-                , updatesResult :: [Update]
-                } deriving (Show, Eq)
-
-data Update 
-    =   MessageUpdate   { updateID :: Int
-                        , message  :: Message
-                        }
-    |   CallbackUpdate  { updateID :: Int
-                        , callback :: Callback
-                        }
-    deriving (Show, Eq)
-
 data Chat
     =   Chat    { chatID        :: Int
                 , chatUserName  :: T.Text

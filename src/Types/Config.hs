@@ -6,7 +6,7 @@ import Data.Aeson (FromJSON, parseJSON, Value (..), (.:))
 import Data.Aeson.Types (Parser)
 import Data.Text (Text)
 import GHC.Generics
-import Types.Message (ServiceMessage()) 
+import Types.Message 
 
 data Config = Config
   { frontEndType :: FrontEndType
@@ -18,12 +18,15 @@ data Config = Config
   , defaultRepeatValue :: Int
   , commandMessages :: ConfCommandMessages 
   } deriving (Generic, Show)
+instance FromJSON Config
 
 data ConfCommandMessages = ConfCommandMessages
-  { help    :: ServiceMessage
-  , repeat  :: ServiceMessage
-  , unknown :: ServiceMessage
+  { help      :: ServiceMessage
+  , repeat    :: ServiceMessage
+  , askRepeat :: ServiceMessage
+  , unknown   :: ServiceMessage
   } deriving (Generic, Show)
+instance FromJSON ConfCommandMessages
 
 data FrontEndType = ConsoleFrontEnd | TelegramFrontEnd deriving Show
 

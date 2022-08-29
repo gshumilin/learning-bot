@@ -26,9 +26,8 @@ source-repository head
 library
   exposed-modules:
       App.BotRun
+      App.ConsoleBotRun
       App.MessageHandling
-      App.TelegramFromJSON
-      App.TelegramToJSON
       Implementations.Commands
       Implementations.Config
       Implementations.EchoMod
@@ -37,6 +36,8 @@ library
       Implementations.SendingMsgs
       Implementations.Settings
       Implementations.UpdatesProcessing
+      Types.Config
+      Types.Message
       Types.Telegram
       Types.Update
   other-modules:

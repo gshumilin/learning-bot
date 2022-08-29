@@ -1,22 +1,26 @@
-{
-    "frontEndType": "console  /  telegram" ,
-    "tgToken" : "bot...",
-    "tgRequestHost" : "api.telegram.org",
-    "tgRequestPort" : 443,
-    "tgTimeout" : 15,
-    "logPath" : "Logs.txt",
-    "defaultRepeatValue" : 1,
-    "commandMessages" : {
-        "helpCommand"   :  { "text" : "Send me a message, and I resend this message to you.\nSend me \"/repeat\" to chose number of repetitions"
-                    },
-        "repeatCommand" :  { "text" : "Choose your destiny", 
-                      "commandContent" : {  "inlineKeyboardMarkup" :  [ [ {"text" : "1", "callback_data" : "1"} ]
-                                                                      , [ {"text" : "2", "callback_data" : "2"} ]
-                                                                      , [ {"text" : "3", "callback_data" : "3"} ]
-                                                                      ]
-                                         } 
-                    },
-        "unknownCommand" : { "text" : "I dont know this command. Say, what?"
-                    }
-                        }
+{ "frontEndType": "console  /  telegram" ,
+  "tgToken" : "bot...",
+  "tgRequestHost" : "api.telegram.org",
+  "tgRequestPort" : 443,
+  "tgTimeout" : 15,
+  "logPath" : "Logs.txt",
+  "defaultRepeatValue" : 1,
+  "commandMessages" : 
+    { "helpCommand" :  
+        { "text" : "Send me a message, and I resend this message to you.\nSend me \"/repeat\" to chose number of repetitions"
+        },
+      "repeatCommand" :  
+        { "text" : "Choose your destiny", 
+          "commandContent" : 
+            { "inlineKeyboardMarkup" :  
+              [ [ {"text" : "1", "callback_data" : "1"} ]
+              , [ {"text" : "2", "callback_data" : "2"} ]
+              , [ {"text" : "3", "callback_data" : "3"} ]
+              ]
+            } 
+        },
+      "unknownCommand" : 
+        { "text" : "I dont know this command. Say, what?"
+        }
+    }
 }
