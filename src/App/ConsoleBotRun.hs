@@ -21,6 +21,7 @@ consoleBot st = do
     handle conf = Handle
       { hSendEcho = \msg n -> sendEcho msg n,
         hAskRepetitions = askRepetitions,
+        hSendHelpMsg = sendHelpMsg,
         hSendText = \txt -> sendText txt,
         hGetText = getText,
         hIsRepetitionsNum = isRepetitionsNum
@@ -37,7 +38,12 @@ sendText txt = T.putStrLn txt
 
 askRepetitions :: ReaderT Config IO ()
 askRepetitions = do
-  TextMessage txt <- asks (repeat . serviceMessages)
+  TextMessage txt <- asks (repeat . consoleServiceMessages)
+  lift $ sendText txt
+
+sendHelpMsg :: ReaderT Config IO ()
+sendHelpMsg = do
+  TextMessage txt <- asks (repeat . consoleServiceMessages)
   lift $ sendText txt
 
 getText :: Message -> Maybe Text

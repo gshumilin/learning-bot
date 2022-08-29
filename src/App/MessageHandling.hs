@@ -11,7 +11,8 @@ data HandleRes = EchoNum Int | AskForRepetitions | AskForRepetitionsAgain | Help
 
 data Handle m msg = Handle
   { hSendEcho :: msg -> Int -> m (),        -- отправить переданное сообщение переданное кол-во раз
-    hAskRepetitions :: ReaderT Config m (), -- отправить пользователю сообщение просьбой указать кол-во повторений
+    hAskRepetitions :: ReaderT Config m (), -- отправить пользователю repeat сообщение из конфига
+    hSendHelpMsg :: ReaderT Config m (),    -- отправить пользователю help сообщение из конфига
     hSendText :: Text -> m (),              -- отправить текст
     hGetText :: msg -> Maybe Text,          -- получить текст из сообщения
     hIsRepetitionsNum :: msg -> Maybe Int   -- проверяем, что юзер прислал в качестве выбора количества повторений
@@ -35,8 +36,6 @@ handleMessage Handle {..} st msg = do
           pure (AskForRepetitionsAgain, st)
     else
       case hGetText msg of
-        Just "/help" -> do
-          TextMessage txt <- asks (help . serviceMessages)
-          lift $ hSendText txt >> pure (HelpMessage, st)
+        Just "/help" -> hSendHelpMsg >> pure (HelpMessage, st)
         Just "/repeat" -> hAskRepetitions >> pure (AskForRepetitions, UserState True (repetitionsNum st))
         _ -> lift $ hSendEcho msg (repetitionsNum st) >> pure (EchoNum (repetitionsNum st), st)

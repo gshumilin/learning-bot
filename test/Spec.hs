@@ -42,6 +42,7 @@ handle :: Handle Identity Message
 handle = Handle
   { hSendEcho = \_ _ -> pure ()
   , hAskRepetitions = pure ()
+  , hSendHelpMsg = pure ()
   , hSendText = \_ -> pure ()
   , hGetText = \msg ->
     case msg of
@@ -50,6 +51,7 @@ handle = Handle
   , hIsRepetitionsNum = \val ->
     case val of
       TextMessage "1" -> Just 1
+      TextMessage "0" -> Nothing
       TextMessage "bad" -> Nothing
   }
 
