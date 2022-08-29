@@ -3,10 +3,11 @@ module App.ConsoleBotRun where
 import Control.Monad.Reader 
 import App.MessageHandling
 import Types.Config (Config(..))
-import Types.Message (Message(..))
+import Types.Message (Message(..), ServiceMessage (..))
 import Text.Read (readMaybe)
 import Data.Text (Text, unpack)
 import qualified Data.Text.IO as T (putStrLn, getLine)
+import Prelude hiding (repeat)
 
 consoleBot :: UserState -> ReaderT Config IO ()
 consoleBot st = do
@@ -36,8 +37,8 @@ sendText txt = T.putStrLn txt
 
 askRepetitions :: ReaderT Config IO ()
 askRepetitions = do
-  txt <- asks (repeat . consoleServiceMessages)
-  lift $ sendText "Choose your destiny"
+  TextMessage txt <- asks (repeat . consoleServiceMessages)
+  lift $ sendText txt
 
 getText :: Message -> Maybe Text
 getText (TextMessage txt) = Just txt

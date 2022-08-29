@@ -17,7 +17,7 @@ main = do
       case frontEndType config of
         ConsoleFrontEnd -> do
           runReaderT (addLog "______________Console bot started______________") config
-          runReaderT (consoleBot (UserState False 1)) config
+          runReaderT (consoleBot (UserState False (defaultRepeatValue config))) config
         TelegramFrontEnd -> do
           runReaderT (addLog "______________Telegram bot started______________") config
           runReaderT (undefined) config
