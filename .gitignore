@@ -1,5 +1,8 @@
 token.txt
 Logs.txt
 .stack-work/
+.vscode/
+.history/
 botConfig.json
+*.cabal
 *~
