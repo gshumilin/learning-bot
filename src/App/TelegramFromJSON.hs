@@ -30,28 +30,6 @@ instance FromJSON Update where
             return $ CallbackUpdate {..}    
         ]
 
-instance FromJSON Message where
-    parseJSON (Object msg) = asum   [
-        do
-            aChat            <- msg .: "chat"
-            aText            <- msg .: "text" :: Parser String
-            case aText of
-                ('/':"help")    -> return $ CommandMessage aChat Help
-                ('/':"repeat")  -> return $ CommandMessage aChat Repeat
-                ('/':_)         -> return $ CommandMessage aChat UnknownCommand
-                _               -> return $ TextMessage aChat (T.pack aText)  ,
-        do
-            chat             <- msg .: "chat"
-            stickerField     <- msg .: "sticker"
-            messageStickerID <- stickerField .: "file_id"
-            return $ StickerMessage {..},
-        do
-            chat                <- msg .: "chat"
-            animationField      <- msg .: "animation"
-            messageAnimationID  <- animationField .: "file_id"
-            return $ AnimationMessage {..}
-                                    ]
-
 instance FromJSON Chat where
     parseJSON (Object cht) = do
         chatID          <- cht .: "id"
@@ -78,7 +56,7 @@ instance FromJSON Callback where
         return $ Callback {..}
 
 
-instance FromJSON Configurations where
+instance FromJSON Config where
     parseJSON (Object cfg) = do
         confToken               <- cfg .: "confToken"
         confRequestHost         <- cfg .: "confRequestHost"
@@ -87,7 +65,7 @@ instance FromJSON Configurations where
         confLogPath             <- cfg .: "confLogPath"
         confDefaultRepeatValue  <- cfg .: "confDefaultRepeatValue"
         confCommandMessages     <- cfg .: "confCommandMessages"
-        return $ Configurations {..}       
+        return $ Config {..}       
 
 instance FromJSON ConfCommandMessages where
     parseJSON (Object txt) = do

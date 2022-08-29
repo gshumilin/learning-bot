@@ -1,19 +1,19 @@
 {-# LANGUAGE OverloadedStrings, RecordWildCards #-}
 
-module Realisations.UpdatesProcessing where
+module Implementations.UpdatesProcessing where
 
 import Types.Telegram
 import           App.TelegramFromJSON
 import           App.TelegramToJSON
-import Realisations.Logging (addLog)
+import Implementations.Logging (addLog)
 import qualified Data.ByteString.Char8 as BS
 import qualified Data.Text as T
 import Data.Text.Encoding as T
 import Control.Monad.Reader
 import Network.HTTP.Simple
-import Realisations.Commands
+import Implementations.Commands
 
-updateProcessing :: (Message -> UsersSettings -> ReaderT Configurations IO ()) -> [Update] -> UsersSettings -> ReaderT Configurations IO (UsersSettings)
+updateProcessing :: (Message -> UsersSettings -> ReaderT Config IO ()) -> [Update] -> UsersSettings -> ReaderT Config IO (UsersSettings)
 updateProcessing fx [] usersSettings = do 
     lift $ putStrLn "End of upd"
     return (usersSettings)

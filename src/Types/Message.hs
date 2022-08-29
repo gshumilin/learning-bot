@@ -16,7 +16,7 @@ instance FromJSON Message where
     parseJSON = undefined
 
 data ServiceMessage = ServiceMessage
-  { serviceMessageText     :: Text
+  { serviceMessageText :: Text
   , serviceMessageKeyboard :: Maybe InlineKeyboardMarkup
   } deriving (Generic, Show)
 
