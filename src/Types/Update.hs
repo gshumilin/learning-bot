@@ -6,13 +6,13 @@ import Data.Aeson
 import Types.Message (Message)
 
 data Updates = Updates
-  { updatesStatus :: Bool
+  { updateStatus :: Bool
   , updates :: [Update]
   } deriving (Show)
 
 instance FromJSON Updates where
   parseJSON (Object o) = do
-    updatesStatus <- o .: "ok"
+    updateStatus <- o .: "ok"
     updates <- o .: "result"
     return $ Updates{..}
   parseJSON _ = mzero
@@ -20,7 +20,7 @@ instance FromJSON Updates where
 data Update = Update
   { updateId :: Int
   , chatId :: Int
-  , updateContent :: Message
+  , message :: Message
   } deriving (Show)
 
 instance FromJSON Update where
@@ -28,6 +28,6 @@ instance FromJSON Update where
     updateId <- o .: "update_id"
     msg <- o .: "message"
     chatId <- msg .: "chat_id"
-    updateContent <- o .: "message"
+    message <- o .: "message"
     return Update {..}
   parseJSON _ = mzero
