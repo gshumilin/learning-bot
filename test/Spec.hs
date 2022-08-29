@@ -1,2 +1,53 @@
+import App.MessageHandling
+import Data.Functor.Identity
+import Test.Hspec
+import Types.Config (Config(..))
+import Types.Message
+import Control.Monad.Reader (asks, ReaderT, lift, runReaderT)
+
 main :: IO ()
-main = putStrLn "Test suite not yet implemented"
+main = hspec . describe "message handler test" $ do
+  it "Should send help message" $ do
+    let sampleSt = UserState False 2
+    let sampleMsg = TextMessage "/help"
+    let result = runReaderT (handleMessage handle sampleSt sampleMsg) sampleConfig
+    result `shouldBe` return (HelpMessage, UserState False 2)
+  it "Should ask user for repetitions value" $ do
+    let sampleSt = UserState False 2
+    let sampleMsg = TextMessage "/repeat"
+    let result = runReaderT (handleMessage handle sampleSt sampleMsg) sampleConfig
+    result `shouldBe` return (AskForRepetitions, UserState True 2)
+  it "Should ask user for repetitions value again, when new value invalid" $ do
+    let sampleSt = UserState True 2
+    let sampleMsg = TextMessage "bad"
+    let result = runReaderT (handleMessage handle sampleSt sampleMsg) sampleConfig
+    result `shouldBe` return (AskForRepetitionsAgain, UserState True 2)
+  it "Should successfully accept new repetitions value" $ do
+    let sampleSt = UserState True 2
+    let sampleMsg = TextMessage "1"
+    let result = runReaderT (handleMessage handle sampleSt sampleMsg) sampleConfig
+    result `shouldBe` return (AcceptRepetitions, UserState False 1)
+  it "Should successfully send echo-messages" $ do
+    let sampleSt = UserState False 2
+    let sampleMsg = TextMessage "some_text"
+    let result = runReaderT (handleMessage handle sampleSt sampleMsg) sampleConfig
+    result `shouldBe` return (EchoNum 2, UserState False 2)
+
+handle :: Handle Identity Message
+handle = Handle
+  { hSendEcho = \_ _ -> pure ()
+  , hAskRepetitions = pure ()
+  , hSendText = \_ -> pure ()
+  , hGetText = \msg ->
+    case msg of
+      TextMessage txt -> Just txt
+      _ -> Nothing
+  , hIsRepetitionsNum = \val ->
+    case val of
+      TextMessage "1" -> Just 1
+      TextMessage "bad" -> Nothing
+  }
+
+sampleConfig :: Config
+sampleConfig = undefined
+-- EchoNum Int | AskForRepetitions | AskForRepetitionsAgain | HelpMessage | AcceptRepetitions

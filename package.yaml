@@ -30,6 +30,7 @@ dependencies:
 - unordered-containers
 - vector
 - mtl
+- hspec
 
 default-extensions:
 - OverloadedStrings

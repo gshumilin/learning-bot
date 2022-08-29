@@ -4,7 +4,7 @@ import Data.Text (Text)
 import Types.Config (Config (..))
 import Control.Monad.Reader (asks, ReaderT, lift)
 
-data HandleRes = EchoNum Int | AskForRepetitions | AskForRepetitionsAgain | HelpMessage | AcceptRepetitions
+data HandleRes = EchoNum Int | AskForRepetitions | AskForRepetitionsAgain | HelpMessage | AcceptRepetitions deriving (Show, Eq) 
 
 data Handle m msg = Handle
   { hSendEcho :: msg -> Int -> m (),        -- отправить переданное сообщение переданное кол-во раз
@@ -17,7 +17,7 @@ data Handle m msg = Handle
 data UserState = UserState 
   { isAskedRepetitions :: Bool            -- находится ли юзер в процессе выбора количества повторений?
   , repetitionsNum :: Int                 -- кол-во повторений для юзера
-  }
+  } deriving (Show, Eq)
 
 handleMessage :: Monad m => Handle m msg -> UserState -> msg -> ReaderT Config m (HandleRes, UserState)
 handleMessage Handle {..} st msg = do
