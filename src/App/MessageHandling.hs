@@ -2,7 +2,7 @@ module App.MessageHandling where
 
 import Data.Text (Text)
 import Types.Config (Config (..))
-import Types.Message (Message (..), ServiceMessages(..))
+import Types.Message (Message (..))
 import Control.Monad.Reader (asks, ReaderT, lift)
 import Prelude hiding (repeat)
 

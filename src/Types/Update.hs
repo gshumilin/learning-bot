@@ -19,7 +19,7 @@ instance FromJSON UpdatesRespond where
 
 data Update = Update
   { updateId :: Int
-  , chatId :: Int
+  , updChatId :: Int
   , message :: Message
   } deriving (Show)
 
@@ -28,7 +28,7 @@ instance FromJSON Update where
     updateId <- o .: "update_id"
     msg <- o .: "message"
     chat <- msg .: "chat"
-    chatId <- chat .: "id"
+    updChatId <- chat .: "id"
     message <- o .: "message"
     return Update {..}
   parseJSON _ = mzero

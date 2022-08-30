@@ -3,7 +3,7 @@ module App.ConsoleBotRun where
 import Control.Monad.Reader 
 import App.MessageHandling
 import Types.Config (Config(..))
-import Types.Message (Message(..), ServiceMessages (..))
+import Types.Message (Message(..))
 import Text.Read (readMaybe)
 import Data.Text (Text, unpack)
 import qualified Data.Text.IO as T (putStrLn, getLine)
@@ -37,12 +37,12 @@ sendText txt = T.putStrLn txt
 
 askRepetitions :: ReaderT Config IO ()
 askRepetitions = do
-  TextMessage txt <- asks (repeat . consoleServiceMessages)
-  lift $ sendText txt
+  msg <- asks repeatText
+  lift $ sendText msg 
 
 sendHelpMsg :: ReaderT Config IO ()
 sendHelpMsg = do
-  TextMessage txt <- asks (help . consoleServiceMessages)
+  txt <- asks helpText
   lift $ sendText txt
 
 getText :: Text -> Maybe Text

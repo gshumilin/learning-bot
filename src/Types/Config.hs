@@ -18,15 +18,16 @@ data Config = Config
   , defaultRepeatValue :: Int
   , helpText :: Text
   , repeatText :: Text
-  , unknowText :: Text
+  , unknownText :: Text
   } deriving (Generic, Show)
 
 instance FromJSON Config where
   parseJSON (Object o) = do  
-    someFrontEndType <- o .: "frontEndType" :: Parser Text
-    let frontEndType = case someFrontEndType of
-          "console" -> ConsoleFrontEnd
-          "telegram" -> TelegramFrontEnd
+    -- someFrontEndType <- o .: "frontEndType" :: Parser Text
+    -- let frontEndType = case someFrontEndType of
+    --       "console" -> ConsoleFrontEnd
+    --       "telegram" -> TelegramFrontEnd
+    let frontEndType = TelegramFrontEnd
     tgToken <- o .: "tgToken"
     tgRequestHost <- o .: "tgRequestHost"
     tgRequestPort <- o .: "tgRequestPort"
@@ -35,7 +36,7 @@ instance FromJSON Config where
     defaultRepeatValue <- o .: "defaultRepeatValue"
     helpText <- o .: "helpText"
     repeatText <- o .: "repeatText"
-    unknowText <- o .: "unknowText"
+    unknownText <- o .: "unknownText"
     pure Config {..}
 
 data FrontEndType = ConsoleFrontEnd | TelegramFrontEnd deriving Show
