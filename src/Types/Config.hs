@@ -16,8 +16,9 @@ data Config = Config
   , tgTimeout :: Int
   , logPath :: Text
   , defaultRepeatValue :: Int
-  , consoleServiceMessages :: ServiceMessages
-  , tgServiceMessages :: ServiceMessages
+  , helpText :: Text
+  , repeatText :: Text
+  , unknowText :: Text
   } deriving (Generic, Show)
 
 instance FromJSON Config where
@@ -32,8 +33,9 @@ instance FromJSON Config where
     tgTimeout <- o .: "tgTimeout"
     logPath <- o .: "logPath"
     defaultRepeatValue <- o .: "defaultRepeatValue"
-    consoleServiceMessages <- o .: "consoleServiceMessages"
-    tgServiceMessages <- o .: "tgServiceMessages"
+    helpText <- o .: "helpText"
+    repeatText <- o .: "repeatText"
+    unknowText <- o .: "unknowText"
     pure Config {..}
 
 data FrontEndType = ConsoleFrontEnd | TelegramFrontEnd deriving Show

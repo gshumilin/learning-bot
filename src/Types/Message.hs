@@ -9,7 +9,7 @@ import Data.Text (Text)
 import Data.Foldable (asum)
 import GHC.Generics
 
-data Message = TextMessage Text | StickerMessage Text | MessageWithKeyboard Text KeyboardMarkup
+data Message = TextMessage Text | StickerMessage Text | UnknownMessage
   deriving (Show)
 
 instance FromJSON Message where
@@ -18,30 +18,8 @@ instance FromJSON Message where
         txt <- o .: "text"
         pure $ TextMessage txt ,
       do
-        txt <- o .: "sticker"
-        pure $ StickerMessage txt ,
-      do
-        txt <- o .: "text"
-        keyboard <- o .: "inlineKeyboardMarkup"
-        pure $ MessageWithKeyboard txt keyboard
+        stickerFields <- o .: "sticker"
+        fileId <- stickerFields .: "file_id"
+        pure $ StickerMessage fileId ,
+      pure UnknownMessage
       ]
-
-data ServiceMessages = ServiceMessages
-  { help :: Message
-  , repeat :: Message
-  , unknown :: Message
-  } deriving (Generic, Show)
-instance FromJSON ServiceMessages
-
-type KeyboardMarkup = [ [KeyboardButton] ] 
-    
-data KeyboardButton = KeyboardButton
-  { buttonText :: Text
-  , callbackData :: Text
-  } deriving (Show, Eq)
-
-instance FromJSON KeyboardButton where
-    parseJSON (Object btn) = do
-        buttonText <- btn .: "text"
-        callbackData <- btn .: "callback_data"
-        return $ KeyboardButton {..}
