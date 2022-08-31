@@ -1,0 +1,88 @@
+{ 
+    "ok":true, 
+    "result":
+      [ { "update_id": 807401130,
+          "message": 
+            { "message_id":1167,
+              "from":
+                { "id":477872581,
+                  "is_bot":false,
+                  "first_name":"u0413u0435u043du0430",
+                  "last_name":"u0428u0443u043cu0438u043bu0438u043d",
+                  "username":"gshumilin",
+                  "language_code":"ru"
+                },
+              "chat": 
+                { "id": 477872581,
+                  "first_name": "u0413u0435u043du0430",
+                  "last_name": "u0428u0443u043cu0438u043bu0438u043d",
+                  "username": "gshumilin",
+                  "type":"private"
+                },
+              "date": 1661853974,
+              "text":1
+              }
+        } ]
+} ,
+
+
+"repeat" :  
+        { "text" : "Choose your destiny", 
+          "inlineKeyboardMarkup" :  
+              [ [ {"text" : "1", "callback_data" : "1"} ]
+              , [ {"text" : "2", "callback_data" : "2"} ]
+              , [ {"text" : "3", "callback_data" : "3"} ]
+              , [ {"text" : "4", "callback_data" : "4"} ]
+              , [ {"text" : "4", "callback_data" : "5"} ]
+              ] 
+        },
+
+
+{ 
+  "ok": true,
+  "result": 
+    [ 
+      { "update_id": 807401167,
+        "callback_query": 
+          { "id":"2052447109358478195",
+            "from": 
+              { "id":477872581,
+                "is_bot":false,
+                "first_name":"u0413u0435u043du0430",
+                "last_name":"u0428u0443u043cu0438u043bu0438u043d",
+                "username":"gshumilin",
+                "language_code":"ru"
+              },
+            "data":"2",
+            "message":
+              { "message_id":1241,
+                "from":
+                  { "id":2141433601,
+                    "is_bot":true,
+                    "first_name":"shumilin-test-bot",
+                    "username":"shumilin_test_bot"
+                  },
+                "chat": 
+                  { "id":477872581,
+                    "first_name":"u0413u0435u043du0430",
+                    "last_name":"u0428u0443u043cu0438u043bu0438u043d",
+                    "username":"gshumilin",
+                    "type":"private"
+                  },
+                "date":1661957872,
+                "text":"Hello",
+                "reply_markup":
+                  { "inline_keyboard":
+                    [ [{"text":"1","callback_data":"1"}],
+                      [{"text":"2","callback_data":"2"}],
+                      [{"text":"3","callback_data":"3"}],
+                      [{"text":"4","callback_data":"4"}],
+                      [{"text":"5","callback_data":"5"}]
+                    ]
+                  }
+              },
+            "chat_instance":"3398924605723976319"
+          }
+        }
+      ]
+}, responseCookieJar = CJ {expose = []}, responseClose' = ResponseClose}

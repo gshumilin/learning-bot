@@ -12,16 +12,16 @@ import Prelude hiding (repeat)
 consoleBot :: UserState -> ReaderT Config IO ()
 consoleBot st = do
   conf <- ask
-  msg <- lift $ T.getLine
+  msg <- lift T.getLine
   let repeatVal = repetitionsNum st
   (handleRes, newUserState) <- handleMessage (handle conf) st msg
   consoleBot newUserState
   where
     handle conf = Handle
-      { hSendEcho = \msg n -> sendEcho msg n,
+      { hSendEcho = sendEcho,
         hAskRepetitions = askRepetitions,
         hSendHelpMsg = sendHelpMsg,
-        hSendText = \txt -> sendText txt,
+        hSendText = sendText,
         hGetText = getText,
         hIsRepetitionsNum = isRepetitionsNum
       }
@@ -33,7 +33,7 @@ sendEcho txt n = do
   sendEcho txt (n-1) 
 
 sendText :: Text -> IO ()
-sendText txt = T.putStrLn txt 
+sendText = T.putStrLn
 
 askRepetitions :: ReaderT Config IO ()
 askRepetitions = do
@@ -46,7 +46,7 @@ sendHelpMsg = do
   lift $ sendText txt
 
 getText :: Text -> Maybe Text
-getText txt = Just txt
+getText = Just
 
 isRepetitionsNum :: Text -> Maybe Int
 isRepetitionsNum txt = isOkVal =<< mbNum

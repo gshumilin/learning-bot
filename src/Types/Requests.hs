@@ -11,7 +11,7 @@ data SendTextRequest = SendTextRequest
   } deriving Show
 
 instance ToJSON SendTextRequest where
-  toJSON SendTextRequest {..} = object $
+  toJSON SendTextRequest {..} = object
     [ "chat_id" .= chatId
     , "text" .= text
     ]
@@ -22,7 +22,7 @@ data SendStickerRequest = SendStickerRequest
   } deriving Show
 
 instance ToJSON SendStickerRequest where
-  toJSON SendStickerRequest {..} = object $
+  toJSON SendStickerRequest {..} = object
     [ "chat_id" .= chatId
     , "sticker" .= stickerFileId
     ]
@@ -34,18 +34,18 @@ data SendKeyboardRequest = SendKeyboardRequest
   } deriving Show
 
 instance ToJSON SendKeyboardRequest where
-  toJSON SendKeyboardRequest {..} = object $
+  toJSON SendKeyboardRequest {..} = object
     [ "chat_id" .= chatId
     , "text" .= msgText
     , "reply_markup" .= keyboard
     ]
 
-data Keyboard = Keyboard
+newtype Keyboard = Keyboard
   { buttonsArray :: [[Button]]
   } deriving Show
 
 instance ToJSON Keyboard where
-  toJSON Keyboard {..} = object $
+  toJSON Keyboard {..} = object
     [ "inline_keyboard" .= buttonsArray  
     ]
 
@@ -55,7 +55,7 @@ data Button = Button
   } deriving Show
 
 instance ToJSON Button where
-  toJSON Button {..} = object $
+  toJSON Button {..} = object
     [ "text" .= lableText
     , "callback_data" .= callbackData
     ]

@@ -25,7 +25,7 @@ tgBot offset statesList = do
       lift $ putStrLn "Invalid JSON. Skip update"
       tgBot (offset + 1) statesList
     Just UpdatesRespond {..} -> do
-      if (status == False)
+      if not status
         then lift $ putStrLn "Update status = False."
         else
           if null updates
@@ -55,10 +55,10 @@ updatesProcessing statesList (x:xs) = do
       updatesProcessing newStateList xs
   where
     handle conf cId = Handle
-      { hSendEcho = \msg n -> sendEcho conf cId msg n,
+      { hSendEcho = sendEcho conf cId,
         hAskRepetitions = askRepetitions cId,
         hSendHelpMsg = sendHelpMsg conf cId,
-        hSendText = \txt -> sendText conf cId txt,
+        hSendText = sendText conf cId,
         hGetText = getText,
         hIsRepetitionsNum = isRepetitionsNum
       }
@@ -80,7 +80,7 @@ sendText conf someChatId txt = do
   let request = setRequestHost (T.encodeUtf8 (tgRequestHost conf))
             $ setRequestPort (tgRequestPort conf)
             $ setRequestSecure True
-            $ setRequestPath ("/" <> (T.encodeUtf8 (tgToken conf)) <> "/" <> "sendMessage")
+            $ setRequestPath ("/" <> T.encodeUtf8 (tgToken conf) <> "/" <> "sendMessage")
             $ setRequestBodyJSON jsonBody
             $ setRequestMethod "POST"
             defaultRequest
@@ -106,7 +106,7 @@ askRepetitions someChatId = do
           setRequestHost (T.encodeUtf8 tgRequestHost)
         $ setRequestPort tgRequestPort
         $ setRequestSecure True
-        $ setRequestPath ("/" <> (T.encodeUtf8 tgToken) <> "/" <> "sendMessage")
+        $ setRequestPath ("/" <> T.encodeUtf8 tgToken <> "/" <> "sendMessage")
         $ setRequestBodyJSON jsonBody
         $ setRequestMethod "POST"
         defaultRequest
@@ -130,7 +130,7 @@ isRepetitionsNum (TextMessage txt) = isOkVal =<< mbNum
     isOkVal num = if num <= 0 && num >= 5 then Nothing else Just num
 
 extractNewOffset :: [Update] -> Int
-extractNewOffset updArray = (+1) . updateId . last $ updArray
+extractNewOffset = (+1) . updateId . last
 
 sendSticker :: Config -> Int -> Text -> IO ()
 sendSticker conf someChatId fileId = do
@@ -138,7 +138,7 @@ sendSticker conf someChatId fileId = do
   let request = setRequestHost (T.encodeUtf8 (tgRequestHost conf))
             $ setRequestPort (tgRequestPort conf)
             $ setRequestSecure True
-            $ setRequestPath ("/" <> (T.encodeUtf8 (tgToken conf)) <> "/" <> "sendSticker")
+            $ setRequestPath ("/" <> T.encodeUtf8 (tgToken conf) <> "/" <> "sendSticker")
             $ setRequestBodyJSON jsonBody
             $ setRequestMethod "POST"
             defaultRequest
@@ -150,10 +150,10 @@ sendSticker conf someChatId fileId = do
 getUpdates :: Int -> ReaderT Config IO (Maybe UpdatesRespond)
 getUpdates intOffset = do
     host' <- asks tgRequestHost
-    let host = T.encodeUtf8 $ host'
+    let host = T.encodeUtf8 host'
     port <- asks tgRequestPort
     token' <- asks tgToken
-    let token = T.encodeUtf8 $ token'
+    let token = T.encodeUtf8 token'
     let method = "getUpdates"
     let offset = BS.pack . show $ intOffset
     timeout' <- asks tgTimeout

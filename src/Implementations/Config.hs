@@ -8,4 +8,4 @@ parseConfig :: IO (Maybe Config)
 parseConfig = do 
   rawJSON <- BS.readFile "botConfig.json"
   let result = decodeStrict rawJSON
-  return (result)
+  return result

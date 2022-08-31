@@ -1,5 +1,3 @@
-{-# LANGUAGE DeriveGeneric #-}
-
 module Types.Message where
 
 import Data.Aeson (FromJSON, parseJSON, Value (..), (.:))

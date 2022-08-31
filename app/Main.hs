@@ -20,5 +20,5 @@ main = do
           runReaderT (consoleBot (UserState False (defaultRepeatValue config))) config
         TelegramFrontEnd -> do
           runReaderT (addLog "______________Telegram bot started______________") config
-          runReaderT (tgBot 907401131 []) config
+          runReaderT (tgBot 0 []) config
 
