@@ -65,12 +65,14 @@ updatesProcessing statesList (x:xs) = do
 
 sendEcho :: Config -> Int -> Message -> Int -> IO ()
 sendEcho _ someChatId _ 0 = pure ()
-sendEcho conf someChatId msg n = do
-  case getText msg of
-    Nothing -> error ""
-    Just txt -> do 
+sendEcho conf someChatId msg n = 
+  case msg of
+    TextMessage txt -> do
       sendText conf someChatId txt
-      sendEcho conf someChatId (TextMessage txt) (n-1) 
+      sendEcho conf someChatId msg (n-1) 
+    StickerMessage fileId -> do
+      sendSticker conf someChatId fileId
+      sendEcho conf someChatId msg (n-1) 
 
 sendText :: Config -> Int -> Text -> IO ()
 sendText conf someChatId txt = do
@@ -90,23 +92,24 @@ askRepetitions :: Int -> ReaderT Config IO ()
 askRepetitions someChatId = do
   Config {..} <- ask
   let jsonBody = SendKeyboardRequest
-                    { chatId = someChatId 
-                    , msgText = "Hello"
-                    , keyboard = Keyboard 
-                        [ [Button "1" "1"]
-                        , [Button "2" "2"]
-                        , [Button "3" "3"]
-                        , [Button "4" "4"]
-                        , [Button "5" "5"]
-                        ]
-                    }
-  let request = setRequestHost (T.encodeUtf8 tgRequestHost)
-            $ setRequestPort tgRequestPort
-            $ setRequestSecure True
-            $ setRequestPath ("/" <> (T.encodeUtf8 tgToken) <> "/" <> "sendMessage")
-            $ setRequestBodyJSON jsonBody
-            $ setRequestMethod "POST"
-            defaultRequest
+        { chatId = someChatId 
+        , msgText = repeatText
+        , keyboard = Keyboard 
+            [ [Button "1" "1"]
+            , [Button "2" "2"]
+            , [Button "3" "3"]
+            , [Button "4" "4"]
+            , [Button "5" "5"]
+            ]
+        }
+  let request = 
+          setRequestHost (T.encodeUtf8 tgRequestHost)
+        $ setRequestPort tgRequestPort
+        $ setRequestSecure True
+        $ setRequestPath ("/" <> (T.encodeUtf8 tgToken) <> "/" <> "sendMessage")
+        $ setRequestBodyJSON jsonBody
+        $ setRequestMethod "POST"
+        defaultRequest
   response <- httpBS request
   lift $ putStrLn $ "asked for Repetitions. Got response from telegram: " ++ show response
   pure ()
@@ -128,6 +131,21 @@ isRepetitionsNum (TextMessage txt) = isOkVal =<< mbNum
 
 extractNewOffset :: [Update] -> Int
 extractNewOffset updArray = (+1) . updateId . last $ updArray
+
+sendSticker :: Config -> Int -> Text -> IO ()
+sendSticker conf someChatId fileId = do
+  let jsonBody = SendStickerRequest someChatId fileId
+  let request = setRequestHost (T.encodeUtf8 (tgRequestHost conf))
+            $ setRequestPort (tgRequestPort conf)
+            $ setRequestSecure True
+            $ setRequestPath ("/" <> (T.encodeUtf8 (tgToken conf)) <> "/" <> "sendSticker")
+            $ setRequestBodyJSON jsonBody
+            $ setRequestMethod "POST"
+            defaultRequest
+  response <- httpBS request
+  putStrLn $ "Try to send text. Got response from telegram: " ++ show response
+  pure ()
+
 
 getUpdates :: Int -> ReaderT Config IO (Maybe UpdatesRespond)
 getUpdates intOffset = do

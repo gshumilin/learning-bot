@@ -23,11 +23,10 @@ data Config = Config
 
 instance FromJSON Config where
   parseJSON (Object o) = do  
-    -- someFrontEndType <- o .: "frontEndType" :: Parser Text
-    -- let frontEndType = case someFrontEndType of
-    --       "console" -> ConsoleFrontEnd
-    --       "telegram" -> TelegramFrontEnd
-    let frontEndType = TelegramFrontEnd
+    someFrontEndType <- o .: "frontEndType" :: Parser Text
+    let frontEndType = case someFrontEndType of
+          "console" -> ConsoleFrontEnd
+          "telegram" -> TelegramFrontEnd
     tgToken <- o .: "tgToken"
     tgRequestHost <- o .: "tgRequestHost"
     tgRequestPort <- o .: "tgRequestPort"

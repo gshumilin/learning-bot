@@ -21,5 +21,8 @@ instance FromJSON Message where
         stickerFields <- o .: "sticker"
         fileId <- stickerFields .: "file_id"
         pure $ StickerMessage fileId ,
+      do
+        callbackData <- o .: "data"
+        pure $ TextMessage callbackData ,
       pure UnknownMessage
       ]

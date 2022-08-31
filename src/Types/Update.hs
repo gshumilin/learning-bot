@@ -1,8 +1,9 @@
 module Types.Update where
 
 import Control.Monad (mzero)
-import Data.Text (Text)
 import Data.Aeson
+import Data.Text (Text)
+import Data.Foldable (asum)
 import Types.Message (Message)
 
 data UpdatesRespond = UpdatesRespond
@@ -24,11 +25,20 @@ data Update = Update
   } deriving (Show)
 
 instance FromJSON Update where
-  parseJSON (Object o) = do
-    updateId <- o .: "update_id"
-    msg <- o .: "message"
-    chat <- msg .: "chat"
-    updChatId <- chat .: "id"
-    message <- o .: "message"
-    return Update {..}
+  parseJSON (Object o) = asum [ 
+    do
+      updateId <- o .: "update_id"
+      messageObj <- o .: "message"
+      chat <- messageObj .: "chat"
+      updChatId <- chat .: "id"
+      message <- o .: "message"
+      return Update {..} ,
+    do 
+      updateId <- o .: "update_id"
+      message <- o .: "callback_query"
+      messageObj <- o .: "callback_query"
+      from <- messageObj .: "from"
+      updChatId <- from .: "id"
+      return Update {..}
+    ]
   parseJSON _ = mzero
