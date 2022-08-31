@@ -2,27 +2,28 @@
 
 module Types.Config where
 
-import Data.Aeson (FromJSON, parseJSON, Value (..), (.:))
+import Data.Aeson (FromJSON, Value (..), parseJSON, (.:))
 import Data.Aeson.Types (Parser)
 import Data.Text (Text)
 import GHC.Generics
-import Types.Message 
+import Types.Message
 
 data Config = Config
-  { frontEndType :: FrontEndType
-  , tgToken :: Text
-  , tgRequestHost :: Text
-  , tgRequestPort :: Int
-  , tgTimeout :: Int
-  , logPath :: Text
-  , defaultRepeatValue :: Int
-  , helpText :: Text
-  , repeatText :: Text
-  , unknownText :: Text
-  } deriving (Generic, Show)
+  { frontEndType :: FrontEndType,
+    tgToken :: Text,
+    tgRequestHost :: Text,
+    tgRequestPort :: Int,
+    tgTimeout :: Int,
+    logPath :: Text,
+    defaultRepeatValue :: Int,
+    helpText :: Text,
+    repeatText :: Text,
+    unknownText :: Text
+  }
+  deriving (Generic, Show)
 
 instance FromJSON Config where
-  parseJSON (Object o) = do  
+  parseJSON (Object o) = do
     someFrontEndType <- o .: "frontEndType" :: Parser Text
     let frontEndType = case someFrontEndType of
           "console" -> ConsoleFrontEnd
@@ -38,7 +39,7 @@ instance FromJSON Config where
     unknownText <- o .: "unknownText"
     pure Config {..}
 
-data FrontEndType = ConsoleFrontEnd | TelegramFrontEnd deriving Show
+data FrontEndType = ConsoleFrontEnd | TelegramFrontEnd deriving (Show)
 
 instance FromJSON FrontEndType where
   parseJSON (String s) = return ConsoleFrontEnd

@@ -1,9 +1,9 @@
 import App.MessageHandling
+import Control.Monad.Reader (ReaderT, asks, lift, runReaderT)
 import Data.Functor.Identity
 import Test.Hspec
-import Types.Config (Config(..))
+import Types.Config (Config (..))
 import Types.Message
-import Control.Monad.Reader (asks, ReaderT, lift, runReaderT)
 
 main :: IO ()
 main = hspec . describe "message handler test" $ do
@@ -39,21 +39,22 @@ main = hspec . describe "message handler test" $ do
     result `shouldBe` return (EchoNum 2, UserState False 2)
 
 handle :: Handle Identity Message
-handle = Handle
-  { hSendEcho = \_ _ -> pure ()
-  , hAskRepetitions = pure ()
-  , hSendHelpMsg = pure ()
-  , hSendText = \_ -> pure ()
-  , hGetText = \msg ->
-    case msg of
-      TextMessage txt -> Just txt
-      _ -> Nothing
-  , hIsRepetitionsNum = \val ->
-    case val of
-      TextMessage "1" -> Just 1
-      TextMessage "0" -> Nothing
-      TextMessage "bad" -> Nothing
-  }
+handle =
+  Handle
+    { hSendEcho = \_ _ -> pure (),
+      hAskRepetitions = pure (),
+      hSendHelpMsg = pure (),
+      hSendText = \_ -> pure (),
+      hGetText = \msg ->
+        case msg of
+          TextMessage txt -> Just txt
+          _ -> Nothing,
+      hIsRepetitionsNum = \val ->
+        case val of
+          TextMessage "1" -> Just 1
+          TextMessage "0" -> Nothing
+          TextMessage "bad" -> Nothing
+    }
 
 sampleConfig :: Config
 sampleConfig = undefined

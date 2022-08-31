@@ -1,9 +1,9 @@
 module Main where
 
-import Control.Monad.Reader
 import App.ConsoleBotRun (consoleBot)
-import App.MessageHandling (UserState(..))
+import App.MessageHandling (UserState (..))
 import App.TgBotRun (tgBot)
+import Control.Monad.Reader
 import Implementations.Config (parseConfig)
 import Implementations.Logging (addLog)
 import Types.Config
@@ -21,4 +21,3 @@ main = do
         TelegramFrontEnd -> do
           runReaderT (addLog "______________Telegram bot started______________") config
           runReaderT (tgBot 0 []) config
-

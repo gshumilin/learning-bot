@@ -5,7 +5,7 @@ import qualified Data.ByteString.Char8 as BS (readFile)
 import Types.Config
 
 parseConfig :: IO (Maybe Config)
-parseConfig = do 
+parseConfig = do
   rawJSON <- BS.readFile "botConfig.json"
   let result = decodeStrict rawJSON
   return result
