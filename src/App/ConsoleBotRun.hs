@@ -40,7 +40,7 @@ askRepetitions :: UserState -> ReaderT Config IO ()
 askRepetitions UserState {..} = do
   Config {..} <- ask
   addLog DEBUG "Called \\repeat command"
-  lift $ sendText $ repeatText <> "Current repetition value: " <> T.pack (show repetitionsNum)
+  lift $ sendText $ repeatText <> ". Current repetition value: " <> T.pack (show repetitionsNum)
 
 sendHelpMsg :: ReaderT Config IO ()
 sendHelpMsg = do

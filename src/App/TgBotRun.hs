@@ -98,7 +98,7 @@ askRepetitions someChatId UserState {..} = do
   let jsonBody =
         SendKeyboardRequest
           { chatId = someChatId,
-            msgText = repeatText <> "Current repetition value: " <> T.pack (show repetitionsNum),
+            msgText = repeatText <> ". Current repetition value: " <> T.pack (show repetitionsNum),
             keyboard =
               Keyboard
                 [ [Button "1" "1"],
