@@ -6,35 +6,33 @@ import Control.Monad.Reader
 import Data.Aeson (decodeStrict, encode)
 import qualified Data.ByteString.Char8 as BS
 import Data.List (find)
-import Data.Text (Text, unpack)
+import qualified Data.Text as T (Text, pack, unpack)
 import qualified Data.Text.Encoding as T (encodeUtf8)
 import qualified Data.Text.Lazy.Encoding as T (decodeUtf8)
+import Implementations.Logging (addLog)
 import Network.HTTP.Simple (defaultRequest, getResponseBody, httpBS, setRequestBodyJSON, setRequestBodyLBS, setRequestHost, setRequestMethod, setRequestPath, setRequestPort, setRequestQueryString, setRequestSecure)
 import Text.Read (readMaybe)
 import Types.Config
+import Types.Log (LogLvl (..))
 import Types.Message
 import Types.Requests (Button (..), Keyboard (..), SendKeyboardRequest (..), SendStickerRequest (..), SendTextRequest (..))
 import Types.Update
-
---import Implementations.Logging (addLog)
 
 tgBot :: Int -> [(Int, UserState)] -> ReaderT Config IO ()
 tgBot offset statesList = do
   mbRespond <- getUpdates offset
   case mbRespond of
     Nothing -> do
-      lift $ putStrLn "Invalid JSON. Skip update"
+      addLog WARNING "Invalid JSON. Skip update"
       tgBot (offset + 1) statesList
     Just UpdatesRespond {..} -> do
       if not status
-        then lift $ putStrLn "Update status = False."
+        then addLog WARNING "Update status = False."
         else
           if null updates
-            then do
-              lift $ putStrLn "Update is empty"
-              tgBot offset statesList
+            then tgBot offset statesList
             else do
-              lift $ putStrLn "Started update processing"
+              addLog WARNING "Started update processing"
               newStateList <- updatesProcessing statesList updates
               tgBot (extractNewOffset updates) newStateList
 
@@ -42,7 +40,7 @@ updatesProcessing :: [(Int, UserState)] -> [Update] -> ReaderT Config IO [(Int, 
 updatesProcessing statesList [] = pure statesList
 updatesProcessing statesList (x : xs) = do
   conf <- ask
-  lift . putStrLn $ "Got message from : " ++ show (updChatId x)
+  addLog DEBUG $ "Got message from: " <> (T.pack . show $ updChatId x)
   case find (\s -> fst s == updChatId x) statesList of
     Nothing -> do
       repeatValue <- asks defaultRepeatValue
@@ -76,7 +74,7 @@ sendEcho conf someChatId msg n =
       sendSticker conf someChatId fileId
       sendEcho conf someChatId msg (n - 1)
 
-sendText :: Config -> Int -> Text -> IO ()
+sendText :: Config -> Int -> T.Text -> IO ()
 sendText conf someChatId txt = do
   let jsonBody = SendTextRequest someChatId txt
   let request =
@@ -126,20 +124,20 @@ sendHelpMsg conf someChatId = do
   msg <- asks helpText
   lift $ sendText conf someChatId msg
 
-getText :: Message -> Maybe Text
+getText :: Message -> Maybe T.Text
 getText (TextMessage txt) = Just txt
 getText (StickerMessage txt) = Just txt
 
 isRepetitionsNum :: Message -> Maybe Int
 isRepetitionsNum (TextMessage txt) = isOkVal =<< mbNum
   where
-    mbNum = readMaybe (unpack txt) :: Maybe Int
+    mbNum = readMaybe (T.unpack txt) :: Maybe Int
     isOkVal num = if num <= 0 && num >= 5 then Nothing else Just num
 
 extractNewOffset :: [Update] -> Int
 extractNewOffset = (+ 1) . updateId . last
 
-sendSticker :: Config -> Int -> Text -> IO ()
+sendSticker :: Config -> Int -> T.Text -> IO ()
 sendSticker conf someChatId fileId = do
   let jsonBody = SendStickerRequest someChatId fileId
   let request =

@@ -4,8 +4,10 @@ import App.MessageHandling
 import Control.Monad.Reader
 import Data.Text (Text, unpack)
 import qualified Data.Text.IO as T (getLine, putStrLn)
+import Implementations.Logging (addLog)
 import Text.Read (readMaybe)
 import Types.Config (Config (..))
+import Types.Log (LogLvl (..))
 import Types.Message (Message (..))
 import Prelude hiding (repeat)
 
@@ -14,6 +16,7 @@ consoleBot st = do
   conf <- ask
   msg <- lift T.getLine
   let repeatVal = repetitionsNum st
+  addLog DEBUG $ "Got message from console user: " <> msg
   (handleRes, newUserState) <- handleMessage (handle conf) st msg
   consoleBot newUserState
   where
@@ -38,12 +41,14 @@ sendText = T.putStrLn
 
 askRepetitions :: ReaderT Config IO ()
 askRepetitions = do
-  msg <- asks repeatText
-  lift $ sendText msg
+  Config {..} <- ask
+  addLog DEBUG "Called \\repeat command"
+  lift $ sendText repeatText
 
 sendHelpMsg :: ReaderT Config IO ()
 sendHelpMsg = do
   txt <- asks helpText
+  addLog DEBUG "Called \\help command"
   lift $ sendText txt
 
 getText :: Text -> Maybe Text

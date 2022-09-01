@@ -6,15 +6,18 @@ import Data.Aeson (FromJSON, Value (..), parseJSON, (.:))
 import Data.Aeson.Types (Parser)
 import Data.Text (Text)
 import GHC.Generics
+import System.IO (FilePath)
+import Types.Log (LogLvl (..))
 import Types.Message
 
 data Config = Config
   { frontEndType :: FrontEndType,
+    logLvl :: LogLvl,
+    logPath :: FilePath,
     tgToken :: Text,
     tgRequestHost :: Text,
     tgRequestPort :: Int,
     tgTimeout :: Int,
-    logPath :: Text,
     defaultRepeatValue :: Int,
     helpText :: Text,
     repeatText :: Text,
@@ -28,11 +31,12 @@ instance FromJSON Config where
     let frontEndType = case someFrontEndType of
           "console" -> ConsoleFrontEnd
           "telegram" -> TelegramFrontEnd
+    logLvl <- o .: "logLvl"
+    logPath <- o .: "logPath"
     tgToken <- o .: "tgToken"
     tgRequestHost <- o .: "tgRequestHost"
     tgRequestPort <- o .: "tgRequestPort"
     tgTimeout <- o .: "tgTimeout"
-    logPath <- o .: "logPath"
     defaultRepeatValue <- o .: "defaultRepeatValue"
     helpText <- o .: "helpText"
     repeatText <- o .: "repeatText"
