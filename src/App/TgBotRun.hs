@@ -179,7 +179,7 @@ getUpdates intOffset = do
                   defaultRequest
   response <- httpBS request
   addLog DEBUG "Sended request for updates to Telegram"
-  let responesBody = getResponseBody response
-  lift $ print response
-  let updates = decodeStrict responesBody
+  let responseBody = getResponseBody response
+  addLog DEBUG $ "Got response " <> T.pack (show response)
+  let updates = decodeStrict responseBody
   return updates
