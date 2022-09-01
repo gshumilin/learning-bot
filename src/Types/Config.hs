@@ -1,14 +1,10 @@
-{-# LANGUAGE DeriveGeneric #-}
-
 module Types.Config where
 
+import Control.Monad (mzero)
 import Data.Aeson (FromJSON, Value (..), parseJSON, (.:))
 import Data.Aeson.Types (Parser)
 import Data.Text (Text)
-import GHC.Generics
-import System.IO (FilePath)
 import Types.Log (LogLvl (..))
-import Types.Message
 
 data Config = Config
   { frontEndType :: FrontEndType,
@@ -23,7 +19,7 @@ data Config = Config
     repeatText :: Text,
     unknownText :: Text
   }
-  deriving (Generic, Show)
+  deriving (Show)
 
 instance FromJSON Config where
   parseJSON (Object o) = do
@@ -31,6 +27,7 @@ instance FromJSON Config where
     let frontEndType = case someFrontEndType of
           "console" -> ConsoleFrontEnd
           "telegram" -> TelegramFrontEnd
+          _ -> UnknownFrontend
     logLvl <- o .: "logLvl"
     logPath <- o .: "logPath"
     tgToken <- o .: "tgToken"
@@ -42,8 +39,6 @@ instance FromJSON Config where
     repeatText <- o .: "repeatText"
     unknownText <- o .: "unknownText"
     pure Config {..}
+  parseJSON _ = mzero
 
-data FrontEndType = ConsoleFrontEnd | TelegramFrontEnd deriving (Show)
-
-instance FromJSON FrontEndType where
-  parseJSON (String s) = return ConsoleFrontEnd
+data FrontEndType = UnknownFrontend | ConsoleFrontEnd | TelegramFrontEnd deriving (Show)

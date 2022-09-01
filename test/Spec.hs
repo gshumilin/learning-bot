@@ -1,9 +1,9 @@
-import App.MessageHandling
-import Control.Monad.Reader (ReaderT, asks, lift, runReaderT)
-import Data.Functor.Identity
-import Test.Hspec
+import App.MessageHandling (Handle (..), HandleRes (..), UserState (..), handleMessage)
+import Control.Monad.Reader (runReaderT)
+import Data.Functor.Identity (Identity (..))
+import Test.Hspec (describe, hspec, it, shouldBe)
 import Types.Config (Config (..))
-import Types.Message
+import Types.Message (Message (..))
 
 main :: IO ()
 main = hspec . describe "message handler test" $ do
@@ -53,7 +53,7 @@ handle =
         case val of
           TextMessage "1" -> Just 1
           TextMessage "0" -> Nothing
-          TextMessage "bad" -> Nothing
+          _ -> Nothing
     }
 
 sampleConfig :: Config

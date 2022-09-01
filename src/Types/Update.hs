@@ -3,7 +3,6 @@ module Types.Update where
 import Control.Monad (mzero)
 import Data.Aeson
 import Data.Foldable (asum)
-import Data.Text (Text)
 import Types.Message (Message)
 
 data UpdatesRespond = UpdatesRespond

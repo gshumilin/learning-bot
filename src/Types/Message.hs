@@ -5,7 +5,6 @@ import Data.Aeson (FromJSON, Value (..), parseJSON, (.:))
 import Data.Aeson.Types ()
 import Data.Foldable (asum)
 import Data.Text (Text)
-import GHC.Generics
 
 data Message = TextMessage Text | StickerMessage Text | UnknownMessage
   deriving (Show)
@@ -25,3 +24,4 @@ instance FromJSON Message where
           pure $ TextMessage callbackData,
         pure UnknownMessage
       ]
+  parseJSON _ = mzero

@@ -1,9 +1,8 @@
 module App.MessageHandling where
 
-import Control.Monad.Reader (ReaderT, asks, lift)
+import Control.Monad.Reader (ReaderT, lift)
 import Data.Text (Text)
 import Types.Config (Config (..))
-import Types.Message (Message (..))
 import Prelude hiding (repeat)
 
 data HandleRes = EchoNum Int | AskForRepetitions | AskForRepetitionsAgain | HelpMessage | AcceptRepetitions deriving (Show, Eq)

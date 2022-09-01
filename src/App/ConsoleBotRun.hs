@@ -1,26 +1,23 @@
 module App.ConsoleBotRun where
 
-import App.MessageHandling
-import Control.Monad.Reader
+import App.MessageHandling (Handle (..), UserState (..), handleMessage)
+import Control.Monad.Reader (ReaderT (..), ask, asks, lift)
 import Data.Text (Text, unpack)
 import qualified Data.Text.IO as T (getLine, putStrLn)
 import Implementations.Logging (addLog)
 import Text.Read (readMaybe)
 import Types.Config (Config (..))
 import Types.Log (LogLvl (..))
-import Types.Message (Message (..))
 import Prelude hiding (repeat)
 
 consoleBot :: UserState -> ReaderT Config IO ()
 consoleBot st = do
-  conf <- ask
   msg <- lift T.getLine
-  let repeatVal = repetitionsNum st
   addLog DEBUG $ "Got message from console user: " <> msg
-  (handleRes, newUserState) <- handleMessage (handle conf) st msg
+  (_, newUserState) <- handleMessage handle st msg
   consoleBot newUserState
   where
-    handle conf =
+    handle =
       Handle
         { hSendEcho = sendEcho,
           hAskRepetitions = askRepetitions,

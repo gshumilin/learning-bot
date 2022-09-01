@@ -1,22 +1,20 @@
 module App.TgBotRun where
 
-import App.MessageHandling
-import Control.Monad (mapM)
-import Control.Monad.Reader
-import Data.Aeson (decodeStrict, encode)
-import qualified Data.ByteString.Char8 as BS
+import App.MessageHandling (Handle (..), UserState (..), handleMessage)
+import Control.Monad.Reader (ReaderT (..), ask, asks, lift)
+import Data.Aeson (decodeStrict)
+import qualified Data.ByteString.Char8 as BS (pack)
 import Data.List (find)
 import qualified Data.Text as T (Text, pack, unpack)
 import qualified Data.Text.Encoding as T (encodeUtf8)
-import qualified Data.Text.Lazy.Encoding as T (decodeUtf8)
 import Implementations.Logging (addLog)
-import Network.HTTP.Simple (defaultRequest, getResponseBody, httpBS, setRequestBodyJSON, setRequestBodyLBS, setRequestHost, setRequestMethod, setRequestPath, setRequestPort, setRequestQueryString, setRequestSecure)
+import Network.HTTP.Simple (defaultRequest, getResponseBody, httpBS, setRequestBodyJSON, setRequestHost, setRequestMethod, setRequestPath, setRequestPort, setRequestQueryString, setRequestSecure)
 import Text.Read (readMaybe)
-import Types.Config
+import Types.Config (Config (..))
 import Types.Log (LogLvl (..))
-import Types.Message
+import Types.Message (Message (..))
 import Types.Requests (Button (..), Keyboard (..), SendKeyboardRequest (..), SendStickerRequest (..), SendTextRequest (..))
-import Types.Update
+import Types.Update (Update (..), UpdatesRespond (..))
 
 tgBot :: Int -> [(Int, UserState)] -> ReaderT Config IO ()
 tgBot offset statesList = do
@@ -64,7 +62,7 @@ updatesProcessing statesList (x : xs) = do
         }
 
 sendEcho :: Config -> Int -> Message -> Int -> IO ()
-sendEcho _ someChatId _ 0 = pure ()
+sendEcho _ _ _ 0 = pure ()
 sendEcho conf someChatId msg n =
   case msg of
     TextMessage txt -> do
@@ -72,6 +70,10 @@ sendEcho conf someChatId msg n =
       sendEcho conf someChatId msg (n - 1)
     StickerMessage fileId -> do
       sendSticker conf someChatId fileId
+      sendEcho conf someChatId msg (n - 1)
+    UnknownMessage -> do
+      let txt = unknownText conf
+      sendText conf someChatId txt
       sendEcho conf someChatId msg (n - 1)
 
 sendText :: Config -> Int -> T.Text -> IO ()
@@ -127,12 +129,14 @@ sendHelpMsg conf someChatId = do
 getText :: Message -> Maybe T.Text
 getText (TextMessage txt) = Just txt
 getText (StickerMessage txt) = Just txt
+getText UnknownMessage = Nothing
 
 isRepetitionsNum :: Message -> Maybe Int
 isRepetitionsNum (TextMessage txt) = isOkVal =<< mbNum
   where
     mbNum = readMaybe (T.unpack txt) :: Maybe Int
     isOkVal num = if num <= 0 && num >= 5 then Nothing else Just num
+isRepetitionsNum _ = Nothing
 
 extractNewOffset :: [Update] -> Int
 extractNewOffset = (+ 1) . updateId . last
@@ -173,9 +177,8 @@ getUpdates intOffset = do
                   [("offset", Just offset), ("timeout", Just timeout)]
                   defaultRequest
   response <- httpBS request
-  --addLog "STATUS : Sended request for updates to Telegram"
+  addLog DEBUG "Sended request for updates to Telegram"
   let responesBody = getResponseBody response
   lift $ print response
   let updates = decodeStrict responesBody
-  --addLog $ "Got updates: n" ++ show responesBody
   return updates

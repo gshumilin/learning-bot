@@ -16,3 +16,4 @@ instance FromJSON LogLvl where
     | toUpper txt == "WARNING" = pure WARNING
     | toUpper txt == "RELEASE" = pure RELEASE
     | otherwise = mzero
+  parseJSON _ = mzero

@@ -1,8 +1,6 @@
 module Types.Requests where
 
-import Control.Monad (mzero)
 import Data.Aeson (ToJSON, object, toJSON, (.=))
-import Data.Foldable (asum)
 import Data.Text (Text)
 
 data SendTextRequest = SendTextRequest
