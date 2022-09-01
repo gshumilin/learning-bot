@@ -139,7 +139,8 @@ isRepetitionsNum (TextMessage txt) = isOkVal =<< mbNum
 isRepetitionsNum _ = Nothing
 
 extractNewOffset :: [Update] -> Int
-extractNewOffset = (+ 1) . updateId . last
+extractNewOffset [] = 1
+extractNewOffset xxs = (\(x : _) -> (+ 1) $ updateId x) $ reverse xxs
 
 sendSticker :: Config -> Int -> T.Text -> IO ()
 sendSticker conf someChatId fileId = do
