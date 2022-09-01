@@ -2,7 +2,8 @@ import App.MessageHandling (Handle (..), HandleRes (..), UserState (..), handleM
 import Control.Monad.Reader (runReaderT)
 import Data.Functor.Identity (Identity (..))
 import Test.Hspec (describe, hspec, it, shouldBe)
-import Types.Config (Config (..))
+import Types.Config (Config (..), FrontEndType (..))
+import Types.Log (LogLvl (..))
 import Types.Message (Message (..))
 
 main :: IO ()
@@ -57,4 +58,17 @@ handle =
     }
 
 sampleConfig :: Config
-sampleConfig = undefined
+sampleConfig =
+  Config
+    { frontEndType = ConsoleFrontEnd,
+      logLvl = DEBUG,
+      logPath = "logPath.txt",
+      tgToken = "bottgToken",
+      tgRequestHost = "api.telegram.org",
+      tgRequestPort = 443,
+      tgTimeout = 15,
+      defaultRepeatValue = 1,
+      helpText = "helpText",
+      repeatText = "repeatText",
+      unknownText = "unknownText"
+    }
