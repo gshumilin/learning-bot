@@ -43,7 +43,7 @@ handle :: Handle Identity Message
 handle =
   Handle
     { hSendEcho = \_ _ -> pure (),
-      hAskRepetitions = pure (),
+      hAskRepetitions = \_ -> pure (),
       hSendHelpMsg = pure (),
       hSendText = \_ -> pure (),
       hGetText = \msg ->

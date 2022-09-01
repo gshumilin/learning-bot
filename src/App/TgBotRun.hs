@@ -92,13 +92,13 @@ sendText conf someChatId txt = do
   putStrLn $ "Try to send text. Got response from telegram: " ++ show response
   pure ()
 
-askRepetitions :: Int -> ReaderT Config IO ()
-askRepetitions someChatId = do
+askRepetitions :: Int -> UserState -> ReaderT Config IO ()
+askRepetitions someChatId UserState {..} = do
   Config {..} <- ask
   let jsonBody =
         SendKeyboardRequest
           { chatId = someChatId,
-            msgText = repeatText,
+            msgText = repeatText <> "Current repetition value: " <> T.pack (show repetitionsNum),
             keyboard =
               Keyboard
                 [ [Button "1" "1"],

@@ -2,7 +2,7 @@ module App.ConsoleBotRun where
 
 import App.MessageHandling (Handle (..), UserState (..), handleMessage)
 import Control.Monad.Reader (ReaderT (..), ask, asks, lift)
-import Data.Text (Text, unpack)
+import qualified Data.Text as T (Text, pack, unpack)
 import qualified Data.Text.IO as T (getLine, putStrLn)
 import Implementations.Logging (addLog)
 import Text.Read (readMaybe)
@@ -27,20 +27,20 @@ consoleBot st = do
           hIsRepetitionsNum = isRepetitionsNum
         }
 
-sendEcho :: Text -> Int -> IO ()
+sendEcho :: T.Text -> Int -> IO ()
 sendEcho _ 0 = pure ()
 sendEcho txt n = do
   sendText txt
   sendEcho txt (n - 1)
 
-sendText :: Text -> IO ()
+sendText :: T.Text -> IO ()
 sendText = T.putStrLn
 
-askRepetitions :: ReaderT Config IO ()
-askRepetitions = do
+askRepetitions :: UserState -> ReaderT Config IO ()
+askRepetitions UserState {..} = do
   Config {..} <- ask
   addLog DEBUG "Called \\repeat command"
-  lift $ sendText repeatText
+  lift $ sendText $ repeatText <> "Current repetition value: " <> T.pack (show repetitionsNum)
 
 sendHelpMsg :: ReaderT Config IO ()
 sendHelpMsg = do
@@ -48,11 +48,11 @@ sendHelpMsg = do
   addLog DEBUG "Called \\help command"
   lift $ sendText txt
 
-getText :: Text -> Maybe Text
+getText :: T.Text -> Maybe T.Text
 getText = Just
 
-isRepetitionsNum :: Text -> Maybe Int
+isRepetitionsNum :: T.Text -> Maybe Int
 isRepetitionsNum txt = isOkVal =<< mbNum
   where
-    mbNum = readMaybe (unpack txt) :: Maybe Int
+    mbNum = readMaybe (T.unpack txt) :: Maybe Int
     isOkVal num = if num <= 0 && num >= 5 then Nothing else Just num
