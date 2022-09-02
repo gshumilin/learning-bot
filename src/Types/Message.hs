@@ -2,7 +2,6 @@ module Types.Message where
 
 import Control.Monad (mzero)
 import Data.Aeson (FromJSON, Value (..), parseJSON, (.:))
-import Data.Aeson.Types ()
 import Data.Foldable (asum)
 import Data.Text (Text)
 

@@ -18,10 +18,17 @@ main = do
       case frontEndType config of
         UnknownFrontend -> do
           runReaderT (addLog WARNING "Config wasn't parsed! Unknown frontend type specified. Bot wasn't started") config
-          pure ()
-        ConsoleFrontEnd -> do
-          runReaderT (addLog RELEASE "______________Console bot started______________") config
-          runReaderT (consoleBot (UserState False (defaultRepeatValue config))) config
-        TelegramFrontEnd -> do
-          runReaderT (addLog RELEASE "______________Telegram bot started______________") config
-          runReaderT (tgBot 0 []) config
+        ConsoleFrontEnd ->
+          runReaderT
+            ( do
+                addLog RELEASE "______________Console bot started______________"
+                consoleBot (UserState False (defaultRepeatValue config))
+            )
+            config
+        TelegramFrontEnd ->
+          runReaderT
+            ( do
+                addLog RELEASE "______________Telegram bot started______________"
+                tgBot 0 []
+            )
+            config

@@ -39,13 +39,13 @@ sendText = T.putStrLn
 askRepetitions :: UserState -> ReaderT Config IO ()
 askRepetitions UserState {..} = do
   Config {..} <- ask
-  addLog DEBUG "Called \\repeat command"
+  addLog DEBUG "Called /repeat command"
   lift $ sendText $ repeatText <> ". Current repetition value: " <> T.pack (show repetitionsNum)
 
 sendHelpMsg :: ReaderT Config IO ()
 sendHelpMsg = do
   txt <- asks helpText
-  addLog DEBUG "Called \\help command"
+  addLog DEBUG "Called /help command"
   lift $ sendText txt
 
 getText :: T.Text -> Maybe T.Text

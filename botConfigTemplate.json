@@ -1,4 +1,4 @@
-{ "frontEndType": "console / telegram" ,
+{ "frontEndType": "console / telegram",
   "logLvl": "DEBUG",
   "logPath" : "Logs.txt",
   "tgToken" : "bot...",

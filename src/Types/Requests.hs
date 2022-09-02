@@ -45,18 +45,18 @@ instance ToJSON SendKeyboardRequest where
       ]
 
 newtype Keyboard = Keyboard
-  { buttonsArray :: [[Button]]
+  { buttonsArray :: [Button]
   }
   deriving (Show)
 
 instance ToJSON Keyboard where
   toJSON Keyboard {..} =
     object
-      [ "inline_keyboard" .= buttonsArray
+      [ "inline_keyboard" .= [buttonsArray]
       ]
 
 data Button = Button
-  { lableText :: Text,
+  { labelText :: Text,
     callbackData :: Text
   }
   deriving (Show)
@@ -64,6 +64,6 @@ data Button = Button
 instance ToJSON Button where
   toJSON Button {..} =
     object
-      [ "text" .= lableText,
+      [ "text" .= labelText,
         "callback_data" .= callbackData
       ]

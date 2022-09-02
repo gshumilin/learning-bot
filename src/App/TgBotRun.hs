@@ -90,7 +90,6 @@ sendText conf someChatId txt = do
                     defaultRequest
   response <- httpBS request
   putStrLn $ "Try to send text. Got response from telegram: " ++ show response
-  pure ()
 
 askRepetitions :: Int -> UserState -> ReaderT Config IO ()
 askRepetitions someChatId UserState {..} = do
@@ -101,11 +100,11 @@ askRepetitions someChatId UserState {..} = do
             msgText = repeatText <> ". Current repetition value: " <> T.pack (show repetitionsNum),
             keyboard =
               Keyboard
-                [ [Button "1" "1"],
-                  [Button "2" "2"],
-                  [Button "3" "3"],
-                  [Button "4" "4"],
-                  [Button "5" "5"]
+                [ Button "1" "1",
+                  Button "2" "2",
+                  Button "3" "3",
+                  Button "4" "4",
+                  Button "5" "5"
                 ]
           }
   let request =
@@ -119,7 +118,6 @@ askRepetitions someChatId UserState {..} = do
                     defaultRequest
   response <- httpBS request
   lift $ putStrLn $ "asked for Repetitions. Got response from telegram: " ++ show response
-  pure ()
 
 sendHelpMsg :: Config -> Int -> ReaderT Config IO ()
 sendHelpMsg conf someChatId = do
@@ -156,7 +154,6 @@ sendSticker conf someChatId fileId = do
                     defaultRequest
   response <- httpBS request
   putStrLn $ "Try to send text. Got response from telegram: " ++ show response
-  pure ()
 
 getUpdates :: Int -> ReaderT Config IO (Maybe UpdatesRespond)
 getUpdates intOffset = do
