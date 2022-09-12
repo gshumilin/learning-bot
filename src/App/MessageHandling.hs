@@ -1,7 +1,8 @@
 module App.MessageHandling where
 
 import Control.Monad.Reader (ReaderT, lift)
-import Data.Text (Text)
+import qualified Data.Text as T (Text, unpack)
+import Text.Read (readMaybe)
 import Types.Config (Config (..))
 import Prelude hiding (repeat)
 
@@ -11,9 +12,8 @@ data Handle m msg = Handle
   { hSendEcho :: msg -> Int -> m (), -- отправить переданное сообщение переданное кол-во раз
     hAskRepetitions :: UserState -> ReaderT Config m (), -- отправить пользователю repeat сообщение из конфига
     hSendHelpMsg :: ReaderT Config m (), -- отправить пользователю help сообщение из конфига
-    hSendText :: Text -> m (), -- отправить текст
-    hGetText :: msg -> Maybe Text, -- получить текст из сообщения
-    hIsRepetitionsNum :: msg -> Maybe Int -- проверяем, что юзер прислал в качестве выбора количества повторений
+    hSendText :: T.Text -> m (), -- отправить текст
+    hGetText :: msg -> Maybe T.Text -- получить текст из сообщения
   }
 
 data UserState = UserState
@@ -25,7 +25,7 @@ data UserState = UserState
 handleMessage :: Monad m => Handle m msg -> UserState -> msg -> ReaderT Config m (HandleRes, UserState)
 handleMessage Handle {..} st msg = do
   if isAskedRepetitions st
-    then case hIsRepetitionsNum msg of
+    then case isRepetitionNum msg of
       Just n -> do
         lift $ hSendText "Ok, new number of repetitions set"
         pure (AcceptRepetitions, UserState False n)
@@ -36,3 +36,10 @@ handleMessage Handle {..} st msg = do
       Just "/help" -> hSendHelpMsg >> pure (HelpMessage, st)
       Just "/repeat" -> hAskRepetitions st >> pure (AskForRepetitions, UserState True (repetitionsNum st))
       _ -> lift $ hSendEcho msg (repetitionsNum st) >> pure (EchoNum (repetitionsNum st), st)
+  where
+    isRepetitionNum m = do
+      txt <- hGetText m
+      num <- readMaybe (T.unpack txt) :: Maybe Int
+      if num <= 0 || num >= 5
+        then Nothing
+        else Just num

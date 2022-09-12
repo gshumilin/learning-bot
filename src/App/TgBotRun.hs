@@ -5,11 +5,10 @@ import Control.Monad.Reader (ReaderT (..), ask, asks, lift)
 import Data.Aeson (decodeStrict)
 import qualified Data.ByteString.Char8 as BS (pack)
 import Data.List (find)
-import qualified Data.Text as T (Text, pack, unpack)
+import qualified Data.Text as T (Text, pack)
 import qualified Data.Text.Encoding as T (encodeUtf8)
 import Implementations.Logging (addLog)
 import Network.HTTP.Simple (defaultRequest, getResponseBody, httpBS, setRequestBodyJSON, setRequestHost, setRequestMethod, setRequestPath, setRequestPort, setRequestQueryString, setRequestSecure)
-import Text.Read (readMaybe)
 import Types.Config (Config (..))
 import Types.Log (LogLvl (..))
 import Types.Message (Message (..))
@@ -57,8 +56,7 @@ updatesProcessing statesList (x : xs) = do
           hAskRepetitions = askRepetitions cId,
           hSendHelpMsg = sendHelpMsg conf cId,
           hSendText = sendText conf cId,
-          hGetText = getText,
-          hIsRepetitionsNum = isRepetitionsNum
+          hGetText = getText
         }
 
 sendEcho :: Config -> Int -> Message -> Int -> IO ()
@@ -128,13 +126,6 @@ getText :: Message -> Maybe T.Text
 getText (TextMessage txt) = Just txt
 getText (StickerMessage txt) = Just txt
 getText UnknownMessage = Nothing
-
-isRepetitionsNum :: Message -> Maybe Int
-isRepetitionsNum (TextMessage txt) = isOkVal =<< mbNum
-  where
-    mbNum = readMaybe (T.unpack txt) :: Maybe Int
-    isOkVal num = if num <= 0 || num >= 5 then Nothing else Just num
-isRepetitionsNum _ = Nothing
 
 extractNewOffset :: [Update] -> Int
 extractNewOffset [] = 1

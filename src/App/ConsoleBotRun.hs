@@ -2,10 +2,9 @@ module App.ConsoleBotRun where
 
 import App.MessageHandling (Handle (..), UserState (..), handleMessage)
 import Control.Monad.Reader (ReaderT (..), ask, asks, lift)
-import qualified Data.Text as T (Text, pack, unpack)
+import qualified Data.Text as T (Text, pack)
 import qualified Data.Text.IO as T (getLine, putStrLn)
 import Implementations.Logging (addLog)
-import Text.Read (readMaybe)
 import Types.Config (Config (..))
 import Types.Log (LogLvl (..))
 import Prelude hiding (repeat)
@@ -23,8 +22,7 @@ consoleBot st = do
           hAskRepetitions = askRepetitions,
           hSendHelpMsg = sendHelpMsg,
           hSendText = sendText,
-          hGetText = getText,
-          hIsRepetitionsNum = isRepetitionsNum
+          hGetText = getText
         }
 
 sendEcho :: T.Text -> Int -> IO ()
@@ -50,9 +48,3 @@ sendHelpMsg = do
 
 getText :: T.Text -> Maybe T.Text
 getText = Just
-
-isRepetitionsNum :: T.Text -> Maybe Int
-isRepetitionsNum txt = isOkVal =<< mbNum
-  where
-    mbNum = readMaybe (T.unpack txt) :: Maybe Int
-    isOkVal num = if num <= 0 || num >= 5 then Nothing else Just num

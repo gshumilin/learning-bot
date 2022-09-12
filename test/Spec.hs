@@ -49,11 +49,6 @@ handle =
       hGetText = \msg ->
         case msg of
           TextMessage txt -> Just txt
-          _ -> Nothing,
-      hIsRepetitionsNum = \val ->
-        case val of
-          TextMessage "1" -> Just 1
-          TextMessage "0" -> Nothing
           _ -> Nothing
     }
 
