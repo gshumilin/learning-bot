@@ -40,6 +40,6 @@ handleMessage Handle {..} st msg = do
     isRepetitionNum m = do
       txt <- hGetText m
       num <- readMaybe (T.unpack txt) :: Maybe Int
-      if num <= 0 || num >= 5
+      if num <= 0 || num > 5
         then Nothing
         else Just num
