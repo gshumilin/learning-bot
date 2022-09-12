@@ -81,7 +81,7 @@ sendText conf someChatId txt = do
         setRequestHost (T.encodeUtf8 (tgRequestHost conf)) $
           setRequestPort (tgRequestPort conf) $
             setRequestSecure True $
-              setRequestPath ("/bot" <> T.encodeUtf8 (tgToken conf) <> "/" <> "sendMessage") $
+              setRequestPath ("/bot" <> T.encodeUtf8 (token conf) <> "/" <> "sendMessage") $
                 setRequestBodyJSON jsonBody $
                   setRequestMethod
                     "POST"
@@ -109,7 +109,7 @@ askRepetitions someChatId UserState {..} = do
         setRequestHost (T.encodeUtf8 tgRequestHost) $
           setRequestPort tgRequestPort $
             setRequestSecure True $
-              setRequestPath ("/bot" <> T.encodeUtf8 tgToken <> "/" <> "sendMessage") $
+              setRequestPath ("/bot" <> T.encodeUtf8 token <> "/" <> "sendMessage") $
                 setRequestBodyJSON jsonBody $
                   setRequestMethod
                     "POST"
@@ -138,7 +138,7 @@ sendSticker conf someChatId fileId = do
         setRequestHost (T.encodeUtf8 (tgRequestHost conf)) $
           setRequestPort (tgRequestPort conf) $
             setRequestSecure True $
-              setRequestPath ("/bot" <> T.encodeUtf8 (tgToken conf) <> "/" <> "sendSticker") $
+              setRequestPath ("/bot" <> T.encodeUtf8 (token conf) <> "/" <> "sendSticker") $
                 setRequestBodyJSON jsonBody $
                   setRequestMethod
                     "POST"
@@ -151,19 +151,19 @@ getUpdates intOffset = do
   host' <- asks tgRequestHost
   let host = T.encodeUtf8 host'
   port <- asks tgRequestPort
-  token' <- asks tgToken
-  let token = T.encodeUtf8 token'
+  token' <- asks token
+  let confToken = T.encodeUtf8 token'
   let method = "getUpdates"
   let offset = BS.pack . show $ intOffset
-  timeout' <- asks tgTimeout
-  let timeout = BS.pack . show $ timeout'
+  timeout' <- asks timeout
+  let confTimeout = BS.pack . show $ timeout'
   let request =
         setRequestHost host $
           setRequestPort port $
             setRequestSecure True $
-              setRequestPath ("/bot" <> token <> "/" <> method) $
+              setRequestPath ("/bot" <> confToken <> "/" <> method) $
                 setRequestQueryString
-                  [("offset", Just offset), ("timeout", Just timeout)]
+                  [("offset", Just offset), ("timeout", Just confTimeout)]
                   defaultRequest
   response <- httpBS request
   addLog DEBUG "Sended request for updates to Telegram"
