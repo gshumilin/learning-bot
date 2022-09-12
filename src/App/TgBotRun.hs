@@ -133,7 +133,7 @@ isRepetitionsNum :: Message -> Maybe Int
 isRepetitionsNum (TextMessage txt) = isOkVal =<< mbNum
   where
     mbNum = readMaybe (T.unpack txt) :: Maybe Int
-    isOkVal num = if num <= 0 && num >= 5 then Nothing else Just num
+    isOkVal num = if num <= 0 || num >= 5 then Nothing else Just num
 isRepetitionsNum _ = Nothing
 
 extractNewOffset :: [Update] -> Int

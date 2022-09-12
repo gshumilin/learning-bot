@@ -55,4 +55,4 @@ isRepetitionsNum :: T.Text -> Maybe Int
 isRepetitionsNum txt = isOkVal =<< mbNum
   where
     mbNum = readMaybe (T.unpack txt) :: Maybe Int
-    isOkVal num = if num <= 0 && num >= 5 then Nothing else Just num
+    isOkVal num = if num <= 0 || num >= 5 then Nothing else Just num
