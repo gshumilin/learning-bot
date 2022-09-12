@@ -81,7 +81,7 @@ sendText conf someChatId txt = do
         setRequestHost (T.encodeUtf8 (tgRequestHost conf)) $
           setRequestPort (tgRequestPort conf) $
             setRequestSecure True $
-              setRequestPath ("/" <> T.encodeUtf8 (tgToken conf) <> "/" <> "sendMessage") $
+              setRequestPath ("/bot" <> T.encodeUtf8 (tgToken conf) <> "/" <> "sendMessage") $
                 setRequestBodyJSON jsonBody $
                   setRequestMethod
                     "POST"
@@ -109,7 +109,7 @@ askRepetitions someChatId UserState {..} = do
         setRequestHost (T.encodeUtf8 tgRequestHost) $
           setRequestPort tgRequestPort $
             setRequestSecure True $
-              setRequestPath ("/" <> T.encodeUtf8 tgToken <> "/" <> "sendMessage") $
+              setRequestPath ("/bot" <> T.encodeUtf8 tgToken <> "/" <> "sendMessage") $
                 setRequestBodyJSON jsonBody $
                   setRequestMethod
                     "POST"
@@ -138,7 +138,7 @@ sendSticker conf someChatId fileId = do
         setRequestHost (T.encodeUtf8 (tgRequestHost conf)) $
           setRequestPort (tgRequestPort conf) $
             setRequestSecure True $
-              setRequestPath ("/" <> T.encodeUtf8 (tgToken conf) <> "/" <> "sendSticker") $
+              setRequestPath ("/bot" <> T.encodeUtf8 (tgToken conf) <> "/" <> "sendSticker") $
                 setRequestBodyJSON jsonBody $
                   setRequestMethod
                     "POST"
@@ -161,7 +161,7 @@ getUpdates intOffset = do
         setRequestHost host $
           setRequestPort port $
             setRequestSecure True $
-              setRequestPath ("/" <> token <> "/" <> method) $
+              setRequestPath ("/bot" <> token <> "/" <> method) $
                 setRequestQueryString
                   [("offset", Just offset), ("timeout", Just timeout)]
                   defaultRequest

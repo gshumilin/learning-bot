@@ -1,7 +1,7 @@
 { "frontEndType": "console / telegram",
   "logLvl": "DEBUG",
   "logPath" : "Logs.txt",
-  "tgToken" : "bot...",
+  "tgToken" : "...",
   "tgRequestHost" : "api.telegram.org",
   "tgRequestPort" : 443,
   "tgTimeout" : 15,
