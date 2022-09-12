@@ -2,8 +2,6 @@
   "logLvl": "DEBUG",
   "logPath" : "Logs.txt",
   "token" : "...",
-  "tgRequestHost" : "api.telegram.org",
-  "tgRequestPort" : 443,
   "timeout" : 15,
   "defaultRepeatValue" : 1,
   "helpText" : "Send me a message, and I resend this message to you.\nSend me \"/repeat\" to chzose number of repetitions",

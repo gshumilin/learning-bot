@@ -11,8 +11,6 @@ data Config = Config
     logLvl :: LogLvl,
     logPath :: FilePath,
     token :: Text,
-    tgRequestHost :: Text,
-    tgRequestPort :: Int,
     timeout :: Int,
     defaultRepeatValue :: Int,
     helpText :: Text,
@@ -31,8 +29,6 @@ instance FromJSON Config where
     logLvl <- o .: "logLvl"
     logPath <- o .: "logPath"
     token <- o .: "token"
-    tgRequestHost <- o .: "tgRequestHost"
-    tgRequestPort <- o .: "tgRequestPort"
     timeout <- o .: "timeout"
     defaultRepeatValue <- o .: "defaultRepeatValue"
     helpText <- o .: "helpText"

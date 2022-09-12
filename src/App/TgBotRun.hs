@@ -78,8 +78,8 @@ sendText :: Config -> Int -> T.Text -> IO ()
 sendText conf someChatId txt = do
   let jsonBody = SendTextRequest someChatId txt
   let request =
-        setRequestHost (T.encodeUtf8 (tgRequestHost conf)) $
-          setRequestPort (tgRequestPort conf) $
+        setRequestHost "api.telegram.org" $
+          setRequestPort 443 $
             setRequestSecure True $
               setRequestPath ("/bot" <> T.encodeUtf8 (token conf) <> "/" <> "sendMessage") $
                 setRequestBodyJSON jsonBody $
@@ -106,8 +106,8 @@ askRepetitions someChatId UserState {..} = do
                 ]
           }
   let request =
-        setRequestHost (T.encodeUtf8 tgRequestHost) $
-          setRequestPort tgRequestPort $
+        setRequestHost "api.telegram.org" $
+          setRequestPort 443 $
             setRequestSecure True $
               setRequestPath ("/bot" <> T.encodeUtf8 token <> "/" <> "sendMessage") $
                 setRequestBodyJSON jsonBody $
@@ -135,8 +135,8 @@ sendSticker :: Config -> Int -> T.Text -> IO ()
 sendSticker conf someChatId fileId = do
   let jsonBody = SendStickerRequest someChatId fileId
   let request =
-        setRequestHost (T.encodeUtf8 (tgRequestHost conf)) $
-          setRequestPort (tgRequestPort conf) $
+        setRequestHost "api.telegram.org" $
+          setRequestPort 443 $
             setRequestSecure True $
               setRequestPath ("/bot" <> T.encodeUtf8 (token conf) <> "/" <> "sendSticker") $
                 setRequestBodyJSON jsonBody $
@@ -148,9 +148,6 @@ sendSticker conf someChatId fileId = do
 
 getUpdates :: Int -> ReaderT Config IO (Maybe UpdatesRespond)
 getUpdates intOffset = do
-  host' <- asks tgRequestHost
-  let host = T.encodeUtf8 host'
-  port <- asks tgRequestPort
   token' <- asks token
   let confToken = T.encodeUtf8 token'
   let method = "getUpdates"
@@ -158,8 +155,8 @@ getUpdates intOffset = do
   timeout' <- asks timeout
   let confTimeout = BS.pack . show $ timeout'
   let request =
-        setRequestHost host $
-          setRequestPort port $
+        setRequestHost "api.telegram.org" $
+          setRequestPort 443 $
             setRequestSecure True $
               setRequestPath ("/bot" <> confToken <> "/" <> method) $
                 setRequestQueryString

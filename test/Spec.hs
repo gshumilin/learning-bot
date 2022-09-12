@@ -67,7 +67,6 @@ sampleConfig =
       logLvl = DEBUG,
       logPath = "logPath.txt",
       token = "token",
-      tgRequestHost = "api.telegram.org",
       tgRequestPort = 443,
       timeout = 15,
       defaultRepeatValue = 1,
