@@ -5,11 +5,11 @@ import Control.Monad.Reader (ReaderT (..), ask, asks, lift)
 import qualified Data.Text as T (Text, pack)
 import qualified Data.Text.IO as T (getLine, putStrLn)
 import Implementations.Logging (addLog)
-import Types.Config (Config (..))
+import Types.Environment (Environment (..))
 import Types.Log (LogLvl (..))
 import Prelude hiding (repeat)
 
-consoleBot :: UserState -> ReaderT Config IO ()
+consoleBot :: UserState -> ReaderT Environment IO ()
 consoleBot st = do
   msg <- lift T.getLine
   addLog DEBUG $ "Got message from console user: " <> msg
@@ -34,13 +34,13 @@ sendEcho txt n = do
 sendText :: T.Text -> IO ()
 sendText = T.putStrLn
 
-askRepetitions :: UserState -> ReaderT Config IO ()
+askRepetitions :: UserState -> ReaderT Environment IO ()
 askRepetitions UserState {..} = do
-  Config {..} <- ask
+  Environment {..} <- ask
   addLog DEBUG "Called /repeat command"
   lift $ sendText $ repeatText <> ". Current repetition value: " <> T.pack (show repetitionsNum)
 
-sendHelpMsg :: ReaderT Config IO ()
+sendHelpMsg :: ReaderT Environment IO ()
 sendHelpMsg = do
   txt <- asks helpText
   addLog DEBUG "Called /help command"

@@ -10,13 +10,13 @@ import qualified Data.Text.Encoding as T (encodeUtf8)
 import Implementations.Logging (addLog)
 import Network.HTTP.Client.Internal (ResponseTimeout (ResponseTimeoutMicro))
 import Network.HTTP.Simple (defaultRequest, getResponseBody, httpBS, setRequestBodyJSON, setRequestHost, setRequestMethod, setRequestPath, setRequestPort, setRequestQueryString, setRequestResponseTimeout, setRequestSecure)
-import Types.Config (Config (..))
+import Types.Environment (Environment (..))
 import Types.Log (LogLvl (..))
 import Types.Message (Message (..))
 import Types.Requests (Button (..), Keyboard (..), SendKeyboardRequest (..), SendStickerRequest (..), SendTextRequest (..))
 import Types.Update (Update (..), UpdatesRespond (..))
 
-tgBot :: Int -> [(Int, UserState)] -> ReaderT Config IO ()
+tgBot :: Int -> [(Int, UserState)] -> ReaderT Environment IO ()
 tgBot offset statesList = do
   mbRespond <- getUpdates offset
   case mbRespond of
@@ -34,7 +34,7 @@ tgBot offset statesList = do
               newStateList <- updatesProcessing statesList updates
               tgBot (extractNewOffset updates) newStateList
 
-updatesProcessing :: [(Int, UserState)] -> [Update] -> ReaderT Config IO [(Int, UserState)]
+updatesProcessing :: [(Int, UserState)] -> [Update] -> ReaderT Environment IO [(Int, UserState)]
 updatesProcessing statesList [] = pure statesList
 updatesProcessing statesList (x : xs) = do
   conf <- ask
@@ -60,7 +60,7 @@ updatesProcessing statesList (x : xs) = do
           hGetText = getText
         }
 
-sendEcho :: Config -> Int -> Message -> Int -> IO ()
+sendEcho :: Environment -> Int -> Message -> Int -> IO ()
 sendEcho _ _ _ 0 = pure ()
 sendEcho conf someChatId msg n =
   case msg of
@@ -75,7 +75,7 @@ sendEcho conf someChatId msg n =
       sendText conf someChatId txt
       sendEcho conf someChatId msg (n - 1)
 
-sendText :: Config -> Int -> T.Text -> IO ()
+sendText :: Environment -> Int -> T.Text -> IO ()
 sendText conf someChatId txt = do
   let jsonBody = SendTextRequest someChatId txt
   let request =
@@ -90,9 +90,9 @@ sendText conf someChatId txt = do
   _ <- httpBS request
   pure ()
 
-askRepetitions :: Int -> UserState -> ReaderT Config IO ()
+askRepetitions :: Int -> UserState -> ReaderT Environment IO ()
 askRepetitions someChatId UserState {..} = do
-  Config {..} <- ask
+  Environment {..} <- ask
   let jsonBody =
         SendKeyboardRequest
           { chatId = someChatId,
@@ -118,7 +118,7 @@ askRepetitions someChatId UserState {..} = do
   _ <- httpBS request
   pure ()
 
-sendHelpMsg :: Config -> Int -> ReaderT Config IO ()
+sendHelpMsg :: Environment -> Int -> ReaderT Environment IO ()
 sendHelpMsg conf someChatId = do
   msg <- asks helpText
   lift $ sendText conf someChatId msg
@@ -132,7 +132,7 @@ extractNewOffset :: [Update] -> Int
 extractNewOffset [] = 1
 extractNewOffset xxs = (\(x : _) -> (+ 1) $ updateId x) $ reverse xxs
 
-sendSticker :: Config -> Int -> T.Text -> IO ()
+sendSticker :: Environment -> Int -> T.Text -> IO ()
 sendSticker conf someChatId fileId = do
   let jsonBody = SendStickerRequest someChatId fileId
   let request =
@@ -147,7 +147,7 @@ sendSticker conf someChatId fileId = do
   _ <- httpBS request
   pure ()
 
-getUpdates :: Int -> ReaderT Config IO (Maybe UpdatesRespond)
+getUpdates :: Int -> ReaderT Environment IO (Maybe UpdatesRespond)
 getUpdates intOffset = do
   host' <- asks tgRequestHost
   let host = T.encodeUtf8 host'

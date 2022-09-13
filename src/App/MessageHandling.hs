@@ -3,15 +3,15 @@ module App.MessageHandling where
 import Control.Monad.Reader (ReaderT, lift)
 import qualified Data.Text as T (Text, unpack)
 import Text.Read (readMaybe)
-import Types.Config (Config (..))
+import Types.Environment (Environment (..))
 import Prelude hiding (repeat)
 
 data HandleRes = EchoNum Int | AskForRepetitions | AskForRepetitionsAgain | HelpMessage | AcceptRepetitions deriving (Show, Eq)
 
 data Handle m msg = Handle
   { hSendEcho :: msg -> Int -> m (), -- multiple message sending
-    hAskRepetitions :: UserState -> ReaderT Config m (), -- send repeat-message from config to user
-    hSendHelpMsg :: ReaderT Config m (), -- send help-message from config to user
+    hAskRepetitions :: UserState -> ReaderT Environment m (), -- send repeat-message from config to user
+    hSendHelpMsg :: ReaderT Environment m (), -- send help-message from config to user
     hSendText :: T.Text -> m (), -- send plain text to user
     hGetText :: msg -> Maybe T.Text -- get text from message
   }
@@ -22,7 +22,7 @@ data UserState = UserState
   }
   deriving (Show, Eq)
 
-handleMessage :: Monad m => Handle m msg -> UserState -> msg -> ReaderT Config m (HandleRes, UserState)
+handleMessage :: Monad m => Handle m msg -> UserState -> msg -> ReaderT Environment m (HandleRes, UserState)
 handleMessage Handle {..} st msg = do
   if isAskedRepetitions st
     then case isRepetitionNum msg of

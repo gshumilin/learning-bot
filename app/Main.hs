@@ -6,16 +6,19 @@ import App.TgBotRun (tgBot)
 import Control.Monad.Reader
 import qualified Data.Text as T (toLower)
 import Implementations.Config (parseConfig)
-import Implementations.Logging (addLog)
+import Implementations.Logging (addLog, makeLogHandle)
+import System.IO (hClose)
 import Types.Config (Config (..))
-import Types.Log (LogLvl (..))
+import qualified Types.Environment as Env (Environment (..))
+import Types.Log (LogDescType (..), LogLvl (..))
 
 main :: IO ()
 main = do
   mbConfig <- parseConfig
   case mbConfig of
     Nothing -> putStrLn "Config wasn't parsed! Bot wasn't started"
-    Just config ->
+    Just config -> do
+      env <- makeEnvironment config
       case T.toLower $ frontEndType config of
         "console" ->
           runReaderT
@@ -23,13 +26,25 @@ main = do
                 addLog RELEASE "______________Console bot started______________"
                 consoleBot (UserState False (defaultRepeatValue config))
             )
-            config
+            env
         "telegram" ->
           runReaderT
             ( do
                 addLog RELEASE "______________Telegram bot started______________"
                 tgBot 0 []
             )
-            config
+            env
         _ -> do
-          runReaderT (addLog WARNING "Config wasn't parsed! Unknown frontend type specified. Bot wasn't started") config
+          runReaderT (addLog RELEASE "Config wasn't parsed! Unknown frontend type specified. Bot wasn't started") env
+      case logDescType config of
+        LogFile _ -> hClose $ Env.logHandle env
+        _ -> pure ()
+
+makeEnvironment :: Config -> IO Env.Environment
+makeEnvironment Config {..} = do
+  logH <- makeLogHandle logDescType
+  pure $
+    Env.Environment
+      { logHandle = logH,
+        ..
+      }

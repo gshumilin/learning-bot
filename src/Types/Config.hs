@@ -5,12 +5,12 @@ module Types.Config where
 import Data.Aeson (FromJSON)
 import Data.Text (Text)
 import GHC.Generics (Generic)
-import Types.Log (LogLvl (..))
+import Types.Log (LogDescType (..), LogLvl (..))
 
 data Config = Config
   { frontEndType :: Text,
     logLvl :: LogLvl,
-    logPath :: FilePath,
+    logDescType :: LogDescType,
     tgToken :: Text,
     tgRequestHost :: Text,
     tgRequestPort :: Int,

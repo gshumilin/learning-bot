@@ -2,9 +2,10 @@ import App.MessageHandling (Handle (..), HandleRes (..), UserState (..), handleM
 import Control.Monad.Reader (runReaderT)
 import Data.Functor.Identity (Identity (..))
 import Data.Text (Text)
+import System.IO (stdout)
 import Test.Hspec (describe, hspec, it, shouldBe)
-import Types.Config (Config (..), FrontEndType (..))
-import Types.Log (LogLvl (..))
+import Types.Environment (Environment (..))
+import Types.Log (LogDescType (..), LogLvl (..))
 import Types.Message (Message (..))
 
 main :: IO ()
@@ -60,13 +61,12 @@ handle =
       hGetText = Just
     }
 
-sampleConfig :: Config
+sampleConfig :: Environment
 sampleConfig =
-  Config
-    { frontEndType = ConsoleFrontEnd,
-      logLvl = DEBUG,
-      logPath = "logPath.txt",
-      tgToken = "bottgToken",
+  Environment
+    { logLvl = DEBUG,
+      logHandle = stdout,
+      tgToken = "botToken",
       tgRequestHost = "api.telegram.org",
       tgRequestPort = 443,
       tgTimeout = 15,
