@@ -8,7 +8,8 @@ import Data.List (find)
 import qualified Data.Text as T (Text, pack)
 import qualified Data.Text.Encoding as T (encodeUtf8)
 import Implementations.Logging (addLog)
-import Network.HTTP.Simple (defaultRequest, getResponseBody, httpBS, setRequestBodyJSON, setRequestHost, setRequestMethod, setRequestPath, setRequestPort, setRequestQueryString, setRequestSecure)
+import Network.HTTP.Client.Internal (ResponseTimeout (ResponseTimeoutMicro))
+import Network.HTTP.Simple (defaultRequest, getResponseBody, httpBS, setRequestBodyJSON, setRequestHost, setRequestMethod, setRequestPath, setRequestPort, setRequestQueryString, setRequestResponseTimeout, setRequestSecure)
 import Types.Config (Config (..))
 import Types.Log (LogLvl (..))
 import Types.Message (Message (..))
@@ -86,8 +87,8 @@ sendText conf someChatId txt = do
                   setRequestMethod
                     "POST"
                     defaultRequest
-  response <- httpBS request
-  putStrLn $ "Try to send text. Got response from telegram: " ++ show response
+  _ <- httpBS request
+  pure ()
 
 askRepetitions :: Int -> UserState -> ReaderT Config IO ()
 askRepetitions someChatId UserState {..} = do
@@ -114,8 +115,8 @@ askRepetitions someChatId UserState {..} = do
                   setRequestMethod
                     "POST"
                     defaultRequest
-  response <- httpBS request
-  lift $ putStrLn $ "asked for Repetitions. Got response from telegram: " ++ show response
+  _ <- httpBS request
+  pure ()
 
 sendHelpMsg :: Config -> Int -> ReaderT Config IO ()
 sendHelpMsg conf someChatId = do
@@ -143,8 +144,8 @@ sendSticker conf someChatId fileId = do
                   setRequestMethod
                     "POST"
                     defaultRequest
-  response <- httpBS request
-  putStrLn $ "Try to send text. Got response from telegram: " ++ show response
+  _ <- httpBS request
+  pure ()
 
 getUpdates :: Int -> ReaderT Config IO (Maybe UpdatesRespond)
 getUpdates intOffset = do
@@ -152,16 +153,17 @@ getUpdates intOffset = do
   let confToken = T.encodeUtf8 token'
   let method = "getUpdates"
   let offset = BS.pack . show $ intOffset
-  timeout' <- asks timeout
-  let confTimeout = BS.pack . show $ timeout'
+  timeoutInt <- asks timeout
+  let timeoutText = BS.pack $ show timeoutInt
   let request =
         setRequestHost "api.telegram.org" $
           setRequestPort 443 $
             setRequestSecure True $
-              setRequestPath ("/bot" <> confToken <> "/" <> method) $
-                setRequestQueryString
-                  [("offset", Just offset), ("timeout", Just confTimeout)]
-                  defaultRequest
+              setRequestResponseTimeout (ResponseTimeoutMicro ((timeoutInt + 1) * 1000000)) $
+                setRequestPath ("/bot" <> confToken <> "/" <> method) $
+                  setRequestQueryString
+                    [("offset", Just offset), ("timeout", Just timeoutText)]
+                    defaultRequest
   response <- httpBS request
   addLog DEBUG "Sended request for updates to Telegram"
   let responseBody = getResponseBody response
