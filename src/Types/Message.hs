@@ -5,8 +5,10 @@ import Data.Aeson (FromJSON, Value (..), parseJSON, (.:))
 import Data.Foldable (asum)
 import Data.Text (Text)
 
-data Message = TextMessage Text | StickerMessage Text | UnknownMessage
+data Message = TextMessage Text | StickerMessage FileId | UnknownMessage
   deriving (Show)
+
+type FileId = Text
 
 instance FromJSON Message where
   parseJSON (Object o) =
