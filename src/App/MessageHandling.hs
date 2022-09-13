@@ -9,16 +9,16 @@ import Prelude hiding (repeat)
 data HandleRes = EchoNum Int | AskForRepetitions | AskForRepetitionsAgain | HelpMessage | AcceptRepetitions deriving (Show, Eq)
 
 data Handle m msg = Handle
-  { hSendEcho :: msg -> Int -> m (), -- отправить переданное сообщение переданное кол-во раз
-    hAskRepetitions :: UserState -> ReaderT Config m (), -- отправить пользователю repeat сообщение из конфига
-    hSendHelpMsg :: ReaderT Config m (), -- отправить пользователю help сообщение из конфига
-    hSendText :: T.Text -> m (), -- отправить текст
-    hGetText :: msg -> Maybe T.Text -- получить текст из сообщения
+  { hSendEcho :: msg -> Int -> m (), -- multiple message sending
+    hAskRepetitions :: UserState -> ReaderT Config m (), -- send repeat-message from config to user
+    hSendHelpMsg :: ReaderT Config m (), -- send help-message from config to user
+    hSendText :: T.Text -> m (), -- send plain text to user
+    hGetText :: msg -> Maybe T.Text -- get text from message
   }
 
 data UserState = UserState
-  { isAskedRepetitions :: Bool, -- находится ли юзер в процессе выбора количества повторений?
-    repetitionsNum :: Int -- кол-во повторений для юзера
+  { isAskedRepetitions :: Bool, -- is user choosing the number of repetitions?
+    repetitionsNum :: Int -- current number of repetitions for user
   }
   deriving (Show, Eq)
 

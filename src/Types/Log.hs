@@ -4,9 +4,9 @@ import Control.Monad (mzero)
 import Data.Aeson.Types (FromJSON, Value (..), parseJSON)
 import Data.Text (toUpper)
 
--- DEBUG    — логирование всех событий при отладке.
--- WARNING  — логирование ошибок и предупреждений.
--- RELEASE  — логироване только тотальных ошибок (например "нет связи с базой данных")
+-- DEBUG    — logging of all events during debugging
+-- WARNING  — logging errors and warnings
+-- RELEASE  — logging only total errors (for example, "there is no connection to the internet")
 
 data LogLvl = DEBUG | WARNING | RELEASE deriving (Show, Eq, Ord)
 
