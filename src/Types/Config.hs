@@ -4,7 +4,7 @@ module Types.Config where
 
 import Data.Aeson (FromJSON)
 import Data.Text (Text)
-import GHC.Generics
+import GHC.Generics (Generic)
 import Types.Log (LogLvl (..))
 
 data Config = Config
