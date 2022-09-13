@@ -5,6 +5,7 @@ import Control.Monad.Reader (ReaderT (..), ask, asks, lift)
 import Data.Aeson (decodeStrict)
 import qualified Data.ByteString.Char8 as BS (pack)
 import Data.List (find)
+import Data.Maybe (isNothing)
 import qualified Data.Text as T (Text, pack)
 import qualified Data.Text.Encoding as T (encodeUtf8)
 import Implementations.Logging (addLog)
@@ -21,16 +22,16 @@ tgBot offset statesList = do
   mbRespond <- getUpdates offset
   case mbRespond of
     Nothing -> do
-      addLog WARNING "Invalid JSON. Skip update"
+      addLog WARNING $ "Skip update"
       tgBot (offset + 1) statesList
     Just UpdatesRespond {..} -> do
       if not status
-        then addLog WARNING "Update status = False."
+        then addLog RELEASE "Update status = False."
         else
           if null updates
             then tgBot offset statesList
             else do
-              addLog WARNING "Started update processing"
+              addLog DEBUG "Started update processing"
               newStateList <- updatesProcessing statesList updates
               tgBot (extractNewOffset updates) newStateList
 
@@ -172,4 +173,8 @@ getUpdates intOffset = do
   let responseBody = getResponseBody response
   addLog DEBUG $ "Got response " <> T.pack (show response)
   let updates = decodeStrict responseBody
-  return updates
+  if isNothing updates
+    then do
+      addLog WARNING $ "Invalid updates-JSON: " <> T.pack (show responseBody)
+      pure updates
+    else pure updates
