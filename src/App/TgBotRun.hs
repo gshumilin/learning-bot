@@ -1,6 +1,7 @@
 module App.TgBotRun where
 
 import App.MessageHandling (Handle (..), UserState (..), handleMessage)
+import Control.Monad (replicateM_)
 import Control.Monad.Reader (ReaderT (..), ask, asks, lift)
 import Data.Aeson (decodeStrict)
 import qualified Data.ByteString.Char8 as BS (pack)
@@ -61,19 +62,15 @@ updatesProcessing statesList (x : xs) = do
         }
 
 sendEcho :: Config -> Int -> Message -> Int -> IO ()
-sendEcho _ _ _ 0 = pure ()
 sendEcho conf someChatId msg n =
   case msg of
     TextMessage txt -> do
-      sendText conf someChatId txt
-      sendEcho conf someChatId msg (n - 1)
+      replicateM_ n $ sendText conf someChatId txt
     StickerMessage fileId -> do
-      sendSticker conf someChatId fileId
-      sendEcho conf someChatId msg (n - 1)
+      replicateM_ n $ sendSticker conf someChatId fileId
     UnknownMessage -> do
       let txt = unknownText conf
       sendText conf someChatId txt
-      sendEcho conf someChatId msg (n - 1)
 
 sendText :: Config -> Int -> T.Text -> IO ()
 sendText conf someChatId txt = do
@@ -97,14 +94,7 @@ askRepetitions someChatId UserState {..} = do
         SendKeyboardRequest
           { chatId = someChatId,
             msgText = repeatText <> ". Current repetition value: " <> T.pack (show repetitionsNum),
-            keyboard =
-              Keyboard
-                [ Button "1" "1",
-                  Button "2" "2",
-                  Button "3" "3",
-                  Button "4" "4",
-                  Button "5" "5"
-                ]
+            keyboard = makeKeyboard 5
           }
   let request =
         setRequestHost (T.encodeUtf8 tgRequestHost) $
@@ -173,3 +163,13 @@ getUpdates intOffset = do
   addLog DEBUG $ "Got response " <> T.pack (show response)
   let updates = decodeStrict responseBody
   return updates
+
+makeKeyboard :: Int -> Keyboard
+makeKeyboard n =
+  Keyboard $
+    map
+      ( \m ->
+          let tm = T.pack (show m)
+           in Button tm tm
+      )
+      [1 .. n]
