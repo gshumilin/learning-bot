@@ -1,6 +1,7 @@
 module App.TgBotRun where
 
 import App.MessageHandling (Handle (..), UserState (..), handleMessage)
+import Control.Exception (throwIO)
 import Control.Monad (replicateM_)
 import Control.Monad.Reader (ReaderT (..), ask, asks, lift)
 import Data.Aeson (decodeStrict)
@@ -8,6 +9,7 @@ import qualified Data.ByteString.Char8 as BS (pack)
 import Data.List (find)
 import qualified Data.Text as T (Text, pack)
 import qualified Data.Text.Encoding as T (encodeUtf8)
+import Implementations.ErrorHandling (BotException (..))
 import Implementations.Logging (addLog)
 import Network.HTTP.Client.Internal (ResponseTimeout (ResponseTimeoutMicro))
 import Network.HTTP.Simple (defaultRequest, getResponseBody, httpBS, setRequestBodyJSON, setRequestHost, setRequestMethod, setRequestPath, setRequestPort, setRequestQueryString, setRequestResponseTimeout, setRequestSecure)
@@ -22,11 +24,13 @@ tgBot offset statesList = do
   mbRespond <- getUpdates offset
   case mbRespond of
     Nothing -> do
-      addLog WARNING "Invalid JSON. Skip update"
-      tgBot (offset + 1) statesList
+      addLog WARNING "Invalid JSON."
+      lift $ throwIO TelegramAPIException
     Just UpdatesRespond {..} -> do
       if not status
-        then addLog WARNING "Update status = False."
+        then do
+          addLog WARNING "Update status = False"
+          lift $ throwIO TelegramAPIException
         else
           if null updates
             then tgBot offset statesList

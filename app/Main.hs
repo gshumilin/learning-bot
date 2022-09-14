@@ -3,6 +3,7 @@ module Main where
 import App.ConsoleBotRun (consoleBot)
 import App.MessageHandling (UserState (..))
 import App.TgBotRun (tgBot)
+import Control.Exception (SomeException, catch)
 import Control.Monad.Reader
 import Implementations.Config (parseConfig)
 import Implementations.Logging (addLog)
@@ -26,9 +27,15 @@ main = do
             )
             config
         TelegramFrontEnd ->
-          runReaderT
-            ( do
-                addLog RELEASE "______________Telegram bot started______________"
-                tgBot 0 []
+          catch
+            ( runReaderT
+                ( do
+                    addLog RELEASE "______________Telegram bot started______________"
+                    tgBot 0 []
+                )
+                config
             )
-            config
+            ( \e -> do
+                putStrLn $ "An exception occured: " ++ show (e :: SomeException)
+                putStrLn "Check that the config is correct and internet connection established"
+            )
