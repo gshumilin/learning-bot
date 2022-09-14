@@ -32,6 +32,7 @@ dependencies:
 - vector
 - mtl
 - hspec
+- time
 
 default-extensions:
 - OverloadedStrings
