@@ -10,8 +10,9 @@ import qualified Data.Text as T (Text, pack)
 import qualified Data.Text.Encoding as T (encodeUtf8)
 import Implementations.ErrorHandling (BotException (..))
 import Implementations.Logging (addLog)
+import Implementations.ReqCreation (makeTgJsonRequest)
 import Network.HTTP.Client.Internal (ResponseTimeout (ResponseTimeoutMicro))
-import Network.HTTP.Simple (defaultRequest, getResponseBody, httpBS, setRequestBodyJSON, setRequestHost, setRequestMethod, setRequestPath, setRequestPort, setRequestQueryString, setRequestResponseTimeout, setRequestSecure)
+import Network.HTTP.Simple (defaultRequest, getResponseBody, httpBS, setRequestHost, setRequestPath, setRequestPort, setRequestQueryString, setRequestResponseTimeout, setRequestSecure)
 import Types.Config (Config (..))
 import Types.Log (LogLvl (..))
 import Types.Message (Message (..))
@@ -82,21 +83,13 @@ sendEcho conf someChatId msg n =
 sendText :: Config -> Int -> T.Text -> IO ()
 sendText conf someChatId txt = do
   let jsonBody = SendTextRequest someChatId txt
-  let request =
-        setRequestHost (T.encodeUtf8 (tgRequestHost conf)) $
-          setRequestPort (tgRequestPort conf) $
-            setRequestSecure True $
-              setRequestPath ("/bot" <> T.encodeUtf8 (tgToken conf) <> "/" <> "sendMessage") $
-                setRequestBodyJSON jsonBody $
-                  setRequestMethod
-                    "POST"
-                    defaultRequest
-  _ <- httpBS request
+  let req = makeTgJsonRequest conf "sendMessage" jsonBody
+  _ <- httpBS req
   pure ()
 
 askRepetitions :: Int -> UserState -> ReaderT Config IO ()
 askRepetitions someChatId UserState {..} = do
-  Config {..} <- ask
+  conf@Config {..} <- ask
   let jsonBody =
         SendKeyboardRequest
           { chatId = someChatId,
@@ -110,16 +103,8 @@ askRepetitions someChatId UserState {..} = do
                   Button "5" "5"
                 ]
           }
-  let request =
-        setRequestHost (T.encodeUtf8 tgRequestHost) $
-          setRequestPort tgRequestPort $
-            setRequestSecure True $
-              setRequestPath ("/bot" <> T.encodeUtf8 tgToken <> "/" <> "sendMessage") $
-                setRequestBodyJSON jsonBody $
-                  setRequestMethod
-                    "POST"
-                    defaultRequest
-  _ <- httpBS request
+  let req = makeTgJsonRequest conf "sendMessage" jsonBody
+  _ <- httpBS req
   pure ()
 
 sendHelpMsg :: Config -> Int -> ReaderT Config IO ()
@@ -139,16 +124,8 @@ extractNewOffset xxs = (\(x : _) -> (+ 1) $ updateId x) $ reverse xxs
 sendSticker :: Config -> Int -> T.Text -> IO ()
 sendSticker conf someChatId fileId = do
   let jsonBody = SendStickerRequest someChatId fileId
-  let request =
-        setRequestHost (T.encodeUtf8 (tgRequestHost conf)) $
-          setRequestPort (tgRequestPort conf) $
-            setRequestSecure True $
-              setRequestPath ("/bot" <> T.encodeUtf8 (tgToken conf) <> "/" <> "sendSticker") $
-                setRequestBodyJSON jsonBody $
-                  setRequestMethod
-                    "POST"
-                    defaultRequest
-  _ <- httpBS request
+  let req = makeTgJsonRequest conf "sendSticker" jsonBody
+  _ <- httpBS req
   pure ()
 
 getUpdates :: Int -> ReaderT Config IO (Maybe UpdatesRespond)
