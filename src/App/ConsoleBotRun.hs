@@ -63,23 +63,23 @@ readUserState = do
       lift $
         modifyIORef
           usersState
-          ( \arr -> (UserState False defaultRepeatValue) : arr
+          ( \arr -> (UserState 1 False defaultRepeatValue) : arr
           )
-      pure $ UserState False defaultRepeatValue
+      pure $ UserState 1 False defaultRepeatValue
     (x : _) -> pure x
 
 modifyUserIsAsked :: ReaderT Environment IO ()
 modifyUserIsAsked = do
-  sts <- asks usersState
-  lift $ modifyIORef sts modifyingField
+  Environment {..} <- ask
+  lift $ modifyIORef usersState (modifyingField defaultRepeatValue)
   where
-    modifyingField [] = [UserState False 1]
-    modifyingField (UserState {..} : _) = [UserState (not isAskedRepetitions) repetitionsNum]
+    modifyingField defaultRepeat [] = [UserState 1 False defaultRepeat]
+    modifyingField _ (UserState {..} : _) = [UserState 1 (not isAskedRepetitions) repetitionsNum]
 
 modifyUserRepNum :: Int -> ReaderT Environment IO ()
 modifyUserRepNum n = do
   sts <- asks usersState
   lift $ modifyIORef sts modifyingField
   where
-    modifyingField [] = [UserState True n]
-    modifyingField (UserState {..} : _) = [UserState isAskedRepetitions n]
+    modifyingField [] = [UserState 1 True n]
+    modifyingField (UserState {..} : _) = [UserState 1 isAskedRepetitions n]

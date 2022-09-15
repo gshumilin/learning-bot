@@ -58,7 +58,7 @@ sampleHandle =
       hSendHelpMsg = pure (),
       hSendText = \_ -> pure (),
       hGetText = Just,
-      hReadUserState = pure $ UserState True 2,
+      hReadUserState = pure $ UserState 1 True 2,
       hModifyUserIsAsked = pure (),
       hModifyUserRepNum = \_ -> pure ()
     }

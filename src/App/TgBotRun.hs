@@ -5,6 +5,7 @@ import Control.Exception (throwIO)
 import Control.Monad.Reader (ReaderT (..), ask, asks, lift)
 import Data.Aeson (decodeStrict)
 import qualified Data.ByteString.Char8 as BS (pack)
+import Data.IORef (modifyIORef, readIORef)
 import Data.List (find)
 import qualified Data.Text as T (Text, pack)
 import qualified Data.Text.Encoding as T (encodeUtf8)
@@ -18,8 +19,8 @@ import Types.Message (Message (..))
 import Types.Requests (Button (..), Keyboard (..), SendKeyboardRequest (..), SendStickerRequest (..), SendTextRequest (..))
 import Types.Update (Update (..), UpdatesRespond (..))
 
-tgBot :: Int -> [(Int, UserState)] -> ReaderT Environment IO ()
-tgBot offset statesList = do
+tgBot :: Int -> ReaderT Environment IO ()
+tgBot offset = do
   mbRespond <- getUpdates offset
   case mbRespond of
     Nothing -> do
@@ -32,37 +33,71 @@ tgBot offset statesList = do
           lift $ throwIO TelegramAPIException
         else
           if null updates
-            then tgBot offset statesList
+            then tgBot offset
             else do
               addLog WARNING "Started update processing"
-              newStateList <- updatesProcessing statesList updates
-              tgBot (extractNewOffset updates) newStateList
+              updatesProcessing updates
+              tgBot $ extractNewOffset updates
 
-updatesProcessing :: [(Int, UserState)] -> [Update] -> ReaderT Environment IO [(Int, UserState)]
-updatesProcessing statesList [] = pure statesList
-updatesProcessing statesList (x : xs) = do
-  conf <- ask
-  addLog DEBUG $ "Got message from: " <> (T.pack . show $ updChatId x)
-  case find (\s -> fst s == updChatId x) statesList of
-    Nothing -> do
-      repeatValue <- asks defaultRepeatValue
-      let st = UserState False repeatValue
-      (_, newState) <- handleMessage (handle conf (updChatId x)) st (message x)
-      let newStateList = (updChatId x, newState) : statesList
-      updatesProcessing newStateList xs
-    Just (cId, st) -> do
-      (_, newState) <- handleMessage (handle conf cId) st (message x)
-      let newStateList = (cId, newState) : statesList
-      updatesProcessing newStateList xs
+updatesProcessing :: [Update] -> ReaderT Environment IO ()
+updatesProcessing [] = pure ()
+updatesProcessing (x : xs) = do
+  env <- ask
+  let cId = updChatId x
+  addLog DEBUG $ "Got message from: " <> (T.pack $ show cId)
+  _ <- handleMessage (handle env cId) (message x)
+  updatesProcessing xs
   where
-    handle conf cId =
+    handle env cId =
       Handle
-        { hSendEcho = sendEcho conf cId,
+        { hSendEcho = sendEcho env cId,
           hAskRepetitions = askRepetitions cId,
-          hSendHelpMsg = sendHelpMsg conf cId,
-          hSendText = sendText conf cId,
-          hGetText = getText
+          hSendHelpMsg = sendHelpMsg env cId,
+          hSendText = sendText env cId,
+          hGetText = getText,
+          hReadUserState = readUserState cId,
+          hModifyUserIsAsked = modifyUserIsAsked cId,
+          hModifyUserRepNum = modifyUserRepNum cId
         }
+
+readUserState :: Int -> ReaderT Environment IO UserState
+readUserState i = do
+  Environment {..} <- ask
+  sts <- lift $ readIORef usersState
+  case find (\UserState {..} -> userId == i) sts of
+    Nothing -> do
+      let defaultUserState = UserState i False defaultRepeatValue
+      lift $ modifyIORef usersState (\arr -> defaultUserState : arr)
+      pure defaultUserState
+    Just st -> pure st
+
+modifyUserIsAsked :: Int -> ReaderT Environment IO ()
+modifyUserIsAsked i = do
+  Environment {..} <- ask
+  lift $ modifyIORef usersState modifyingField
+  where
+    modifyingField =
+      foldr
+        ( \s@UserState {..} acc ->
+            if userId == i
+              then UserState userId (not isAskedRepetitions) repetitionsNum : acc
+              else s : acc
+        )
+        []
+
+modifyUserRepNum :: Int -> Int -> ReaderT Environment IO ()
+modifyUserRepNum i n = do
+  sts <- asks usersState
+  lift $ modifyIORef sts modifyingField
+  where
+    modifyingField =
+      foldr
+        ( \s@UserState {..} acc ->
+            if userId == i
+              then UserState userId isAskedRepetitions n : acc
+              else s : acc
+        )
+        []
 
 sendEcho :: Environment -> Int -> Message -> Int -> IO ()
 sendEcho _ _ _ 0 = pure ()

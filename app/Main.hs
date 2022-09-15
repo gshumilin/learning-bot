@@ -1,7 +1,6 @@
 module Main where
 
 import App.ConsoleBotRun (consoleBot)
-import App.MessageHandling (UserState (..))
 import App.TgBotRun (tgBot)
 import Control.Monad.Reader (runReaderT)
 import Data.IORef (newIORef)
@@ -25,14 +24,14 @@ main = do
           runReaderT
             ( do
                 addLog RELEASE "______________Console bot started______________"
-                consoleBot (UserState False (defaultRepeatValue config))
+                consoleBot
             )
             env
         "telegram" ->
           runReaderT
             ( do
                 addLog RELEASE "______________Telegram bot started______________"
-                tgBot 0 []
+                tgBot 0
             )
             env
         _ -> do
@@ -41,12 +40,12 @@ main = do
         LogFile _ -> hClose $ Env.logHandle env
         _ -> pure ()
 
-makeEnvironment :: Config -> IO Environment
+makeEnvironment :: Config -> IO Env.Environment
 makeEnvironment Config {..} = do
   logH <- makeLogHandle logDescType
   st <- newIORef []
   pure $
-    Environment
+    Env.Environment
       { logHandle = logH,
         usersState = st,
         ..
