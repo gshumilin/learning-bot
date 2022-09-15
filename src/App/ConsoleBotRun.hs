@@ -2,6 +2,7 @@ module App.ConsoleBotRun where
 
 import App.MessageHandling (Handle (..), handleMessage)
 import Control.Monad.Reader (ReaderT (..), ask, asks, lift)
+import Data.IORef (modifyIORef, readIORef)
 import qualified Data.Text as T (Text, pack)
 import qualified Data.Text.IO as T (getLine, putStrLn)
 import Implementations.Logging (addLog)
@@ -25,8 +26,8 @@ consoleBot = do
           hSendText = sendText,
           hGetText = getText,
           hReadUserState = readUserState,
-          hModifyUserIsAsked = undefined,
-          hModifyUserRepNum = undefined
+          hModifyUserIsAsked = modifyUserIsAsked,
+          hModifyUserRepNum = modifyUserRepNum
         }
 
 sendEcho :: T.Text -> Int -> IO ()
@@ -53,5 +54,32 @@ sendHelpMsg = do
 getText :: T.Text -> Maybe T.Text
 getText = Just
 
-readUserState :: ReaderT Environment m UserState
-readUserState = undefined
+readUserState :: ReaderT Environment IO UserState
+readUserState = do
+  Environment {..} <- ask
+  sts <- lift $ readIORef usersState
+  case sts of
+    [] -> do
+      lift $
+        modifyIORef
+          usersState
+          ( \arr -> (UserState False defaultRepeatValue) : arr
+          )
+      pure $ UserState False defaultRepeatValue
+    (x : _) -> pure x
+
+modifyUserIsAsked :: ReaderT Environment IO ()
+modifyUserIsAsked = do
+  sts <- asks usersState
+  lift $ modifyIORef sts modifyingField
+  where
+    modifyingField [] = [UserState False 1]
+    modifyingField (UserState {..} : _) = [UserState (not isAskedRepetitions) repetitionsNum]
+
+modifyUserRepNum :: Int -> ReaderT Environment IO ()
+modifyUserRepNum n = do
+  sts <- asks usersState
+  lift $ modifyIORef sts modifyingField
+  where
+    modifyingField [] = [UserState True n]
+    modifyingField (UserState {..} : _) = [UserState isAskedRepetitions n]
