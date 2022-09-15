@@ -15,8 +15,8 @@ data Handle m msg = Handle
     hSendText :: T.Text -> m (), -- send plain text to user
     hGetText :: msg -> Maybe T.Text, -- get text from message
     hReadUserState :: ReaderT Environment m UserState,
-    hModifyUserIsAsked :: m (),
-    hModifyUserRepNum :: Int -> m ()
+    hModifyUserIsAsked :: ReaderT Environment m (),
+    hModifyUserRepNum :: Int -> ReaderT Environment m ()
   }
 
 handleMessage :: Monad m => Handle m msg -> msg -> ReaderT Environment m HandleRes
@@ -25,15 +25,16 @@ handleMessage Handle {..} msg = do
   if isAskedRepetitions
     then case isRepetitionNum msg of
       Just n -> do
+        hModifyUserRepNum n
+        hModifyUserIsAsked
         lift $ hSendText "Ok, new number of repetitions set"
-        _ <- lift $ hModifyUserRepNum n
         pure AcceptRepetitions
       Nothing -> do
         lift $ hSendText "Please, specify number from 1 to 5"
         pure AskForRepetitionsAgain
     else case hGetText msg of
       Just "/help" -> hSendHelpMsg >> pure HelpMessage
-      Just "/repeat" -> hAskRepetitions st >> lift hModifyUserIsAsked >> pure AskForRepetitions
+      Just "/repeat" -> hAskRepetitions st >> hModifyUserIsAsked >> pure AskForRepetitions
       _ -> do
         lift $ hSendEcho msg repetitionsNum
         pure $ EchoNum repetitionsNum

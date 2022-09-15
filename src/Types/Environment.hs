@@ -1,5 +1,6 @@
 module Types.Environment where
 
+import Data.IORef (IORef)
 import Data.Text (Text)
 import System.IO (Handle)
 import Types.Log (LogLvl (..))
@@ -15,7 +16,7 @@ data Environment = Environment
     helpText :: Text,
     repeatText :: Text,
     unknownText :: Text,
-    usersState :: [UserState]
+    usersState :: IORef [UserState]
   }
 
 data UserState = UserState

@@ -3,7 +3,8 @@ module Main where
 import App.ConsoleBotRun (consoleBot)
 import App.MessageHandling (UserState (..))
 import App.TgBotRun (tgBot)
-import Control.Monad.Reader
+import Control.Monad.Reader (runReaderT)
+import Data.IORef (newIORef)
 import qualified Data.Text as T (toLower)
 import Implementations.Config (parseConfig)
 import Implementations.Logging (addLog, makeLogHandle)
@@ -40,11 +41,13 @@ main = do
         LogFile _ -> hClose $ Env.logHandle env
         _ -> pure ()
 
-makeEnvironment :: Config -> IO Env.Environment
+makeEnvironment :: Config -> IO Environment
 makeEnvironment Config {..} = do
   logH <- makeLogHandle logDescType
+  st <- newIORef []
   pure $
-    Env.Environment
+    Environment
       { logHandle = logH,
+        usersState = st,
         ..
       }
