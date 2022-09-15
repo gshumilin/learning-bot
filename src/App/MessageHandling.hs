@@ -14,14 +14,14 @@ data Handle m msg = Handle
     hSendHelpMsg :: ReaderT Environment m (), -- send help-message from config to user
     hSendText :: T.Text -> m (), -- send plain text to user
     hGetText :: msg -> Maybe T.Text, -- get text from message
-    readUserState :: ReaderT Environment m UserState,
+    hReadUserState :: ReaderT Environment m UserState,
     hModifyUserIsAsked :: m (),
     hModifyUserRepNum :: Int -> m ()
   }
 
 handleMessage :: Monad m => Handle m msg -> msg -> ReaderT Environment m HandleRes
 handleMessage Handle {..} msg = do
-  st@UserState {..} <- readUserState
+  st@UserState {..} <- hReadUserState
   if isAskedRepetitions
     then case isRepetitionNum msg of
       Just n -> do

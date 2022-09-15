@@ -1,20 +1,21 @@
 module App.ConsoleBotRun where
 
-import App.MessageHandling (Handle (..), UserState (..), handleMessage)
+import App.MessageHandling (Handle (..), handleMessage)
 import Control.Monad.Reader (ReaderT (..), ask, asks, lift)
 import qualified Data.Text as T (Text, pack)
 import qualified Data.Text.IO as T (getLine, putStrLn)
 import Implementations.Logging (addLog)
-import Types.Environment (Environment (..))
+import Types.Environment (Environment (..), UserState (..))
 import Types.Log (LogLvl (..))
 import Prelude hiding (repeat)
 
-consoleBot :: UserState -> ReaderT Environment IO ()
-consoleBot st = do
+consoleBot :: ReaderT Environment IO ()
+consoleBot = do
   msg <- lift T.getLine
   addLog DEBUG $ "Got message from console user: " <> msg
-  (_, newUserState) <- handleMessage handle st msg
-  consoleBot newUserState
+  res <- handleMessage handle msg
+  addLog DEBUG $ "Message handling return result: " <> T.pack (show res)
+  consoleBot
   where
     handle =
       Handle
@@ -22,7 +23,10 @@ consoleBot st = do
           hAskRepetitions = askRepetitions,
           hSendHelpMsg = sendHelpMsg,
           hSendText = sendText,
-          hGetText = getText
+          hGetText = getText,
+          hReadUserState = readUserState,
+          hModifyUserIsAsked = undefined,
+          hModifyUserRepNum = undefined
         }
 
 sendEcho :: T.Text -> Int -> IO ()
@@ -48,3 +52,6 @@ sendHelpMsg = do
 
 getText :: T.Text -> Maybe T.Text
 getText = Just
+
+readUserState :: ReaderT Environment m UserState
+readUserState = undefined
