@@ -10,10 +10,8 @@ data Config = Config
   { frontEndType :: FrontEndType,
     logLvl :: LogLvl,
     logPath :: FilePath,
-    tgToken :: Text,
-    tgRequestHost :: Text,
-    tgRequestPort :: Int,
-    tgTimeout :: Int,
+    token :: Text,
+    timeout :: Int,
     defaultRepeatValue :: Int,
     helpText :: Text,
     repeatText :: Text,
@@ -30,10 +28,8 @@ instance FromJSON Config where
           _ -> UnknownFrontend
     logLvl <- o .: "logLvl"
     logPath <- o .: "logPath"
-    tgToken <- o .: "tgToken"
-    tgRequestHost <- o .: "tgRequestHost"
-    tgRequestPort <- o .: "tgRequestPort"
-    tgTimeout <- o .: "tgTimeout"
+    token <- o .: "token"
+    timeout <- o .: "timeout"
     defaultRepeatValue <- o .: "defaultRepeatValue"
     helpText <- o .: "helpText"
     repeatText <- o .: "repeatText"
