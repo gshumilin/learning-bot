@@ -1,6 +1,6 @@
 module App.TgBotRun where
 
-import App.MessageHandling (Handle (..), UserState (..), handleMessage)
+import App.MessageHandling (Handle (..), handleMessage)
 import Control.Exception (throwIO)
 import Control.Monad.Reader (ReaderT (..), ask, asks, lift)
 import Data.Aeson (decodeStrict)
@@ -12,7 +12,7 @@ import Implementations.ErrorHandling (BotException (..))
 import Implementations.Logging (addLog)
 import Network.HTTP.Client.Internal (ResponseTimeout (ResponseTimeoutMicro))
 import Network.HTTP.Simple (defaultRequest, getResponseBody, httpBS, setRequestBodyJSON, setRequestHost, setRequestMethod, setRequestPath, setRequestPort, setRequestQueryString, setRequestResponseTimeout, setRequestSecure)
-import Types.Environment (Environment (..))
+import Types.Environment (Environment (..), UserState (..))
 import Types.Log (LogLvl (..))
 import Types.Message (Message (..))
 import Types.Requests (Button (..), Keyboard (..), SendKeyboardRequest (..), SendStickerRequest (..), SendTextRequest (..))
