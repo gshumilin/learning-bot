@@ -1,6 +1,7 @@
 module App.TgBotRun where
 
 import App.MessageHandling (Handle (..), UserState (..), handleMessage)
+import Control.Exception (throwIO)
 import Control.Monad.Reader (ReaderT (..), ask, asks, lift)
 import Data.Aeson (decodeStrict)
 import qualified Data.ByteString.Char8 as BS (pack)
@@ -8,6 +9,7 @@ import Data.List (find)
 import Data.Maybe (isNothing)
 import qualified Data.Text as T (Text, pack)
 import qualified Data.Text.Encoding as T (encodeUtf8)
+import Implementations.ErrorHandling (BotException (..))
 import Implementations.Logging (addLog)
 import Network.HTTP.Client.Internal (ResponseTimeout (ResponseTimeoutMicro))
 import Network.HTTP.Simple (defaultRequest, getResponseBody, httpBS, setRequestBodyJSON, setRequestHost, setRequestMethod, setRequestPath, setRequestPort, setRequestQueryString, setRequestResponseTimeout, setRequestSecure)
@@ -23,7 +25,7 @@ tgBot offset statesList = do
   case mbRespond of
     Nothing -> do
       addLog WARNING $ "Skip update"
-      tgBot (offset + 1) statesList
+      lift $ throwIO TelegramAPIException
     Just UpdatesRespond {..} -> do
       if not status
         then addLog RELEASE "Update status = False."
@@ -80,10 +82,10 @@ sendText :: Config -> Int -> T.Text -> IO ()
 sendText conf someChatId txt = do
   let jsonBody = SendTextRequest someChatId txt
   let request =
-        setRequestHost (T.encodeUtf8 (tgRequestHost conf)) $
-          setRequestPort (tgRequestPort conf) $
+        setRequestHost "api.telegram.org" $
+          setRequestPort 443 $
             setRequestSecure True $
-              setRequestPath ("/bot" <> T.encodeUtf8 (tgToken conf) <> "/" <> "sendMessage") $
+              setRequestPath ("/bot" <> T.encodeUtf8 (token conf) <> "/" <> "sendMessage") $
                 setRequestBodyJSON jsonBody $
                   setRequestMethod
                     "POST"
@@ -108,10 +110,10 @@ askRepetitions someChatId UserState {..} = do
                 ]
           }
   let request =
-        setRequestHost (T.encodeUtf8 tgRequestHost) $
-          setRequestPort tgRequestPort $
+        setRequestHost "api.telegram.org" $
+          setRequestPort 443 $
             setRequestSecure True $
-              setRequestPath ("/bot" <> T.encodeUtf8 tgToken <> "/" <> "sendMessage") $
+              setRequestPath ("/bot" <> T.encodeUtf8 token <> "/" <> "sendMessage") $
                 setRequestBodyJSON jsonBody $
                   setRequestMethod
                     "POST"
@@ -137,10 +139,10 @@ sendSticker :: Config -> Int -> T.Text -> IO ()
 sendSticker conf someChatId fileId = do
   let jsonBody = SendStickerRequest someChatId fileId
   let request =
-        setRequestHost (T.encodeUtf8 (tgRequestHost conf)) $
-          setRequestPort (tgRequestPort conf) $
+        setRequestHost "api.telegram.org" $
+          setRequestPort 443 $
             setRequestSecure True $
-              setRequestPath ("/bot" <> T.encodeUtf8 (tgToken conf) <> "/" <> "sendSticker") $
+              setRequestPath ("/bot" <> T.encodeUtf8 (token conf) <> "/" <> "sendSticker") $
                 setRequestBodyJSON jsonBody $
                   setRequestMethod
                     "POST"
@@ -150,23 +152,20 @@ sendSticker conf someChatId fileId = do
 
 getUpdates :: Int -> ReaderT Config IO (Maybe UpdatesRespond)
 getUpdates intOffset = do
-  host' <- asks tgRequestHost
-  let host = T.encodeUtf8 host'
-  port <- asks tgRequestPort
-  token' <- asks tgToken
-  let token = T.encodeUtf8 token'
+  token' <- asks token
+  let confToken = T.encodeUtf8 token'
   let method = "getUpdates"
   let offset = BS.pack . show $ intOffset
-  timeoutInt <- asks tgTimeout
-  let timeout = BS.pack $ show timeoutInt
+  timeoutInt <- asks timeout
+  let timeoutText = BS.pack $ show timeoutInt
   let request =
-        setRequestHost host $
-          setRequestPort port $
+        setRequestHost "api.telegram.org" $
+          setRequestPort 443 $
             setRequestSecure True $
               setRequestResponseTimeout (ResponseTimeoutMicro ((timeoutInt + 1) * 1000000)) $
-                setRequestPath ("/bot" <> token <> "/" <> method) $
+                setRequestPath ("/bot" <> confToken <> "/" <> method) $
                   setRequestQueryString
-                    [("offset", Just offset), ("timeout", Just timeout)]
+                    [("offset", Just offset), ("timeout", Just timeoutText)]
                     defaultRequest
   response <- httpBS request
   addLog DEBUG "Sended request for updates to Telegram"

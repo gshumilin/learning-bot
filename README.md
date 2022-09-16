@@ -16,7 +16,7 @@ In addition, config allows user to select logging level, path to the log file, t
 <h1> Deployment </h1> 
 
 1. Clone the repository;
-2. Fill in the `botConfigTemplate.json` file and rename it to `botConfig.json`. All fields except tgToken and frontEndType are filled with default values. In `tgToken`, instead of an ellipsis, you need to enter your bot's token. In `frontEndType`, you need to specify either “console” to launch a console bot, or “telegram” to launch a telegram bot;
+2. Fill in the `botConfigTemplate.json` file and rename it to `botConfig.json`. All fields except `token` and frontEndType are filled with default values. In `token`, instead of an ellipsis, you need to enter your bot's token. In `frontEndType`, you need to specify either “console” to launch a console bot, or “telegram” to launch a telegram bot;
 3. The bot is launched by the `stack run` command from the terminal opened in the project folder;
 
 <h1>  Architecture </h1> 
