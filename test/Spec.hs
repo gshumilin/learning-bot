@@ -66,10 +66,8 @@ sampleConfig =
   Environment
     { logLvl = DEBUG,
       logHandle = stdout,
-      tgToken = "botToken",
-      tgRequestHost = "api.telegram.org",
-      tgRequestPort = 443,
-      tgTimeout = 15,
+      token = "botToken",
+      timeout = 15,
       defaultRepeatValue = 1,
       helpText = "helpText",
       repeatText = "repeatText",
