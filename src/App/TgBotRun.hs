@@ -130,23 +130,20 @@ sendSticker conf someChatId fileId = do
 
 getUpdates :: Int -> ReaderT Config IO (Maybe UpdatesRespond)
 getUpdates intOffset = do
-  host' <- asks tgRequestHost
-  let host = T.encodeUtf8 host'
-  port <- asks tgRequestPort
-  token' <- asks tgToken
-  let token = T.encodeUtf8 token'
+  token' <- asks token
+  let confToken = T.encodeUtf8 token'
   let method = "getUpdates"
   let offset = BS.pack . show $ intOffset
-  timeoutInt <- asks tgTimeout
-  let timeout = BS.pack $ show timeoutInt
+  timeoutInt <- asks timeout
+  let timeoutText = BS.pack $ show timeoutInt
   let request =
-        setRequestHost host $
-          setRequestPort port $
+        setRequestHost "api.telegram.org" $
+          setRequestPort 443 $
             setRequestSecure True $
               setRequestResponseTimeout (ResponseTimeoutMicro ((timeoutInt + 1) * 1000000)) $
-                setRequestPath ("/bot" <> token <> "/" <> method) $
+                setRequestPath ("/bot" <> confToken <> "/" <> method) $
                   setRequestQueryString
-                    [("offset", Just offset), ("timeout", Just timeout)]
+                    [("offset", Just offset), ("timeout", Just timeoutText)]
                     defaultRequest
   response <- httpBS request
   addLog DEBUG "Sended request for updates to Telegram"
