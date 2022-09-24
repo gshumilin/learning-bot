@@ -2,6 +2,7 @@ module App.TgBotRun where
 
 import App.MessageHandling (Handle (..), handleMessage)
 import Control.Exception (throwIO)
+import Control.Monad (void)
 import Control.Monad.Reader (ReaderT (..), ask, asks, lift)
 import Data.Aeson (decodeStrict)
 import qualified Data.ByteString.Char8 as BS (pack)
@@ -126,8 +127,7 @@ sendText conf someChatId txt = do
                   setRequestMethod
                     "POST"
                     defaultRequest
-  _ <- httpBS request
-  pure ()
+  void $ httpBS request
 
 askRepetitions :: Int -> UserState -> ReaderT Environment IO ()
 askRepetitions someChatId UserState {..} = do
@@ -154,8 +154,7 @@ askRepetitions someChatId UserState {..} = do
                   setRequestMethod
                     "POST"
                     defaultRequest
-  _ <- httpBS request
-  pure ()
+  void $ httpBS request
 
 sendHelpMsg :: Environment -> Int -> ReaderT Environment IO ()
 sendHelpMsg conf someChatId = do
@@ -183,8 +182,7 @@ sendSticker conf someChatId fileId = do
                   setRequestMethod
                     "POST"
                     defaultRequest
-  _ <- httpBS request
-  pure ()
+  void $ httpBS request
 
 getUpdates :: Int -> ReaderT Environment IO (Maybe UpdatesRespond)
 getUpdates intOffset = do
