@@ -8,10 +8,8 @@ import Types.Log (LogLvl (..))
 data Environment = Environment
   { logLvl :: LogLvl,
     logHandle :: Handle,
-    tgToken :: Text,
-    tgRequestHost :: Text,
-    tgRequestPort :: Int,
-    tgTimeout :: Int,
+    token :: Text,
+    timeout :: Int,
     defaultRepeatValue :: Int,
     helpText :: Text,
     repeatText :: Text,
