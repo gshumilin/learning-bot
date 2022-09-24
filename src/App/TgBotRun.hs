@@ -8,6 +8,7 @@ import Data.Aeson (decodeStrict)
 import qualified Data.ByteString.Char8 as BS (pack)
 import Data.IORef (modifyIORef, readIORef)
 import Data.List (find)
+import Data.Maybe (isNothing)
 import qualified Data.Text as T (Text, pack)
 import qualified Data.Text.Encoding as T (encodeUtf8)
 import Implementations.ErrorHandling (BotException (..))
@@ -26,20 +27,18 @@ tgBot offset = do
   mbRespond <- getUpdates offset
   case mbRespond of
     Nothing -> do
-      addLog WARNING "Invalid JSON."
+      addLog WARNING $ "Skip update"
       lift $ throwIO TelegramAPIException
     Just UpdatesRespond {..} -> do
       if not status
-        then do
-          addLog WARNING "Update status = False"
-          lift $ throwIO TelegramAPIException
+        then addLog RELEASE "Update status = False."
         else
           if null updates
             then tgBot offset
             else do
-              addLog WARNING "Started update processing"
+              addLog DEBUG "Started update processing"
               updatesProcessing updates
-              tgBot $ extractNewOffset updates
+              tgBot (extractNewOffset updates)
 
 updatesProcessing :: [Update] -> ReaderT Environment IO ()
 updatesProcessing [] = pure ()
@@ -176,7 +175,11 @@ getUpdates intOffset = do
   let responseBody = getResponseBody response
   addLog DEBUG $ "Got response " <> T.pack (show response)
   let updates = decodeStrict responseBody
-  return updates
+  if isNothing updates
+    then do
+      addLog WARNING $ "Invalid updates-JSON: " <> T.pack (show responseBody)
+      pure updates
+    else pure updates
 
 makeKeyboard :: Int -> Keyboard
 makeKeyboard n =
