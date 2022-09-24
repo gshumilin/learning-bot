@@ -66,15 +66,18 @@ sampleHandle =
       hModifyUserRepNum = \_ -> pure ()
     }
 
-sampleConfig :: Environment
-sampleConfig =
-  Environment
-    { logLvl = DEBUG,
-      logHandle = stdout,
-      token = "botToken",
-      timeout = 15,
-      defaultRepeatValue = 1,
-      helpText = "helpText",
-      repeatText = "repeatText",
-      unknownText = "unknownText"
-    }
+sampleEnv :: IO Environment
+sampleEnv = do
+  st <- newIORef []
+  pure $
+    Environment
+      { logLvl = DEBUG,
+        logHandle = stdout,
+        token = "botToken",
+        timeout = 15,
+        defaultRepeatValue = 1,
+        helpText = "helpText",
+        repeatText = "repeatText",
+        unknownText = "unknownText",
+        usersState = st
+      }
