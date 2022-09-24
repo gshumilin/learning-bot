@@ -1,6 +1,7 @@
 module App.ConsoleBotRun where
 
 import App.MessageHandling (Handle (..), handleMessage)
+import Control.Monad (replicateM_)
 import Control.Monad.Reader (ReaderT (..), ask, asks, lift)
 import Data.IORef (modifyIORef, readIORef)
 import qualified Data.Text as T (Text, pack)
@@ -31,10 +32,7 @@ consoleBot = do
         }
 
 sendEcho :: T.Text -> Int -> IO ()
-sendEcho _ 0 = pure ()
-sendEcho txt n = do
-  sendText txt
-  sendEcho txt (n - 1)
+sendEcho txt n = replicateM_ n $ sendText txt
 
 sendText :: T.Text -> IO ()
 sendText = T.putStrLn
