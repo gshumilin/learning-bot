@@ -2,7 +2,6 @@ module App.TgBotRun where
 
 import App.MessageHandling (Handle (..), handleMessage)
 import Control.Exception (throwIO)
-import Control.Monad (void)
 import Control.Monad.Reader (ReaderT (..), ask, asks, lift)
 import Data.Aeson (decodeStrict)
 import qualified Data.ByteString.Char8 as BS (pack)
@@ -15,7 +14,6 @@ import Implementations.Logging (addLog)
 import Implementations.ReqCreation (makeTgJsonRequest)
 import Network.HTTP.Client.Internal (ResponseTimeout (ResponseTimeoutMicro))
 import Network.HTTP.Simple (defaultRequest, getResponseBody, httpBS, setRequestHost, setRequestPath, setRequestPort, setRequestQueryString, setRequestResponseTimeout, setRequestSecure)
-import Types.Config (Config (..))
 import Types.Environment (Environment (..), UserState (..))
 import Types.Log (LogLvl (..))
 import Types.Message (Message (..))
@@ -126,7 +124,7 @@ sendText conf someChatId txt = do
 
 askRepetitions :: Int -> UserState -> ReaderT Environment IO ()
 askRepetitions someChatId UserState {..} = do
-  Environment {..} <- ask
+  env@Environment {..} <- ask
   let jsonBody =
         SendKeyboardRequest
           { chatId = someChatId,
@@ -140,7 +138,7 @@ askRepetitions someChatId UserState {..} = do
                   Button "5" "5"
                 ]
           }
-  let req = makeTgJsonRequest conf "sendMessage" jsonBody
+  let req = makeTgJsonRequest env "sendMessage" jsonBody
   _ <- httpBS req
   pure ()
 
@@ -168,7 +166,7 @@ sendSticker conf someChatId fileId = do
 getUpdates :: Int -> ReaderT Environment IO (Maybe UpdatesRespond)
 getUpdates intOffset = do
   token' <- asks token
-  let confToken = T.encodeUtf8 token'
+  let envToken = T.encodeUtf8 token'
   let method = "getUpdates"
   let offset = BS.pack . show $ intOffset
   timeoutInt <- asks timeout
@@ -178,7 +176,7 @@ getUpdates intOffset = do
           setRequestPort 443 $
             setRequestSecure True $
               setRequestResponseTimeout (ResponseTimeoutMicro ((timeoutInt + 1) * 1000000)) $
-                setRequestPath ("/bot" <> confToken <> "/" <> method) $
+                setRequestPath ("/bot" <> envToken <> "/" <> method) $
                   setRequestQueryString
                     [("offset", Just offset), ("timeout", Just timeoutText)]
                     defaultRequest
