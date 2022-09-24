@@ -2,7 +2,6 @@ module App.TgBotRun where
 
 import App.MessageHandling (Handle (..), handleMessage)
 import Control.Exception (throwIO)
-import Control.Monad (void)
 import Control.Monad.Reader (ReaderT (..), ask, asks, lift)
 import Data.Aeson (decodeStrict)
 import qualified Data.ByteString.Char8 as BS (pack)
@@ -12,8 +11,9 @@ import qualified Data.Text as T (Text, pack)
 import qualified Data.Text.Encoding as T (encodeUtf8)
 import Implementations.ErrorHandling (BotException (..))
 import Implementations.Logging (addLog)
+import Implementations.ReqCreation (makeTgJsonRequest)
 import Network.HTTP.Client.Internal (ResponseTimeout (ResponseTimeoutMicro))
-import Network.HTTP.Simple (defaultRequest, getResponseBody, httpBS, setRequestBodyJSON, setRequestHost, setRequestMethod, setRequestPath, setRequestPort, setRequestQueryString, setRequestResponseTimeout, setRequestSecure)
+import Network.HTTP.Simple (defaultRequest, getResponseBody, httpBS, setRequestHost, setRequestPath, setRequestPort, setRequestQueryString, setRequestResponseTimeout, setRequestSecure)
 import Types.Environment (Environment (..), UserState (..))
 import Types.Log (LogLvl (..))
 import Types.Message (Message (..))
@@ -118,20 +118,13 @@ sendEcho conf someChatId msg n =
 sendText :: Environment -> Int -> T.Text -> IO ()
 sendText conf someChatId txt = do
   let jsonBody = SendTextRequest someChatId txt
-  let request =
-        setRequestHost "api.telegram.org" $
-          setRequestPort 443 $
-            setRequestSecure True $
-              setRequestPath ("/bot" <> T.encodeUtf8 (token conf) <> "/" <> "sendMessage") $
-                setRequestBodyJSON jsonBody $
-                  setRequestMethod
-                    "POST"
-                    defaultRequest
-  void $ httpBS request
+  let req = makeTgJsonRequest conf "sendMessage" jsonBody
+  _ <- httpBS req
+  pure ()
 
 askRepetitions :: Int -> UserState -> ReaderT Environment IO ()
 askRepetitions someChatId UserState {..} = do
-  Environment {..} <- ask
+  env@Environment {..} <- ask
   let jsonBody =
         SendKeyboardRequest
           { chatId = someChatId,
@@ -145,16 +138,9 @@ askRepetitions someChatId UserState {..} = do
                   Button "5" "5"
                 ]
           }
-  let request =
-        setRequestHost "api.telegram.org" $
-          setRequestPort 443 $
-            setRequestSecure True $
-              setRequestPath ("/bot" <> T.encodeUtf8 token <> "/" <> "sendMessage") $
-                setRequestBodyJSON jsonBody $
-                  setRequestMethod
-                    "POST"
-                    defaultRequest
-  void $ httpBS request
+  let req = makeTgJsonRequest env "sendMessage" jsonBody
+  _ <- httpBS req
+  pure ()
 
 sendHelpMsg :: Environment -> Int -> ReaderT Environment IO ()
 sendHelpMsg conf someChatId = do
@@ -173,21 +159,14 @@ extractNewOffset xxs = (\(x : _) -> (+ 1) $ updateId x) $ reverse xxs
 sendSticker :: Environment -> Int -> T.Text -> IO ()
 sendSticker conf someChatId fileId = do
   let jsonBody = SendStickerRequest someChatId fileId
-  let request =
-        setRequestHost "api.telegram.org" $
-          setRequestPort 443 $
-            setRequestSecure True $
-              setRequestPath ("/bot" <> T.encodeUtf8 (token conf) <> "/" <> "sendSticker") $
-                setRequestBodyJSON jsonBody $
-                  setRequestMethod
-                    "POST"
-                    defaultRequest
-  void $ httpBS request
+  let req = makeTgJsonRequest conf "sendSticker" jsonBody
+  _ <- httpBS req
+  pure ()
 
 getUpdates :: Int -> ReaderT Environment IO (Maybe UpdatesRespond)
 getUpdates intOffset = do
   token' <- asks token
-  let confToken = T.encodeUtf8 token'
+  let envToken = T.encodeUtf8 token'
   let method = "getUpdates"
   let offset = BS.pack . show $ intOffset
   timeoutInt <- asks timeout
@@ -197,7 +176,7 @@ getUpdates intOffset = do
           setRequestPort 443 $
             setRequestSecure True $
               setRequestResponseTimeout (ResponseTimeoutMicro ((timeoutInt + 1) * 1000000)) $
-                setRequestPath ("/bot" <> confToken <> "/" <> method) $
+                setRequestPath ("/bot" <> envToken <> "/" <> method) $
                   setRequestQueryString
                     [("offset", Just offset), ("timeout", Just timeoutText)]
                     defaultRequest
