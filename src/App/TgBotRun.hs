@@ -27,7 +27,7 @@ tgBot offset = do
   mbRespond <- getUpdates offset
   case mbRespond of
     Nothing -> do
-      addLog WARNING $ "Skip update"
+      addLog WARNING "Skip update"
       lift $ throwIO TelegramAPIException
     Just UpdatesRespond {..} -> do
       if not status
@@ -45,7 +45,7 @@ updatesProcessing [] = pure ()
 updatesProcessing (x : xs) = do
   env <- ask
   let cId = updChatId x
-  addLog DEBUG $ "Got message from: " <> (T.pack $ show cId)
+  addLog DEBUG $ "Got message from: " <> T.pack (show cId)
   _ <- handleMessage (handle env cId) (message x)
   updatesProcessing xs
   where
@@ -68,7 +68,7 @@ readUserState i = do
   case find (\UserState {..} -> userId == i) sts of
     Nothing -> do
       let defaultUserState = UserState i False defaultRepeatValue
-      lift $ modifyIORef usersState (\arr -> defaultUserState : arr)
+      lift $ modifyIORef usersState (defaultUserState :)
       pure defaultUserState
     Just st -> pure st
 
