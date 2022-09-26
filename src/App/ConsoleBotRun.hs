@@ -61,7 +61,7 @@ readUserState = do
       lift $
         modifyIORef
           usersState
-          ( \arr -> (UserState 1 False defaultRepeatValue) : arr
+          ( \arr -> UserState 1 False defaultRepeatValue : arr
           )
       pure $ UserState 1 False defaultRepeatValue
     (x : _) -> pure x
